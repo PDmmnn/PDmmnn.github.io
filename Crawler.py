@@ -1,5 +1,4 @@
-
-import requests from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup
 import requests
 url = "https://www.foerderdatenbank.de/FDB/Content/DE/Foerderprogramm/Land/Sachsen/buergschaft-sachsen-beteiligung.html"
 
@@ -9,7 +8,7 @@ soup = BeautifulSoup(html_content, 'html.parser')
 
 # Extract all <p> tags with class="content"
 
-Ansprechpunkte = soup.find_all('dd', class ='card')
+Ansprechpunkte = soup.find_all('dd', class_='card')
 Förderarten = soup.find_all('dd')
 #ProgramContents = soup.find_all('div', class_='content')
 
