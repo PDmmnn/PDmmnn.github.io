@@ -98,12 +98,12 @@ button:hover {
 
 @media (max-width: 768px) {
     .main-container {
-        margin-top: 25px;
+        margin-top: 50px;
     }
     
     h1 {
     text-align: center;
     color: #003366;
-    margin-top: 25px;
+    margin-top: 10px;
     }
 }
