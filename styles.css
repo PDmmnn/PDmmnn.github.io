@@ -29,7 +29,9 @@ body {
 h1 {
     text-align: center;
     color: #003366;
-    a {text-decoration: none; }
+    a {text-decoration: none;
+      color: #003366;
+      }
 }
 
 label {
