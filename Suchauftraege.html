@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meine Suchaufträge</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>FörderAlert</h1>
+        <form id="searchOrdersForm">
+            <label for="email">E-Mail</label>
+            <input type="email" id="email" name="email" placeholder="...">
+            <button type="button" onclick="showSearchOrders()">Suchaufträge anzeigen</button>
+        </form>
+        
+        <div class="search-orders">
+            <div class="checkbox-group">
+                <label><input type="checkbox" name="searchOrder" value="suchauftrag1"> Suchauftrag 1</label>
+                <label><input type="checkbox" name="searchOrder" value="suchauftrag2"> Suchauftrag 2</label>
+                <label><input type="checkbox" name="searchOrder" value="suchauftrag3"> Suchauftrag 3</label>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button type="button" onclick="createNewSearchOrder()">Neuen Suchauftrag anlegen</button>
+            <button type="button" onclick="cancelSelectedSearchOrders()" class="cancel-button">Markierte Suchaufträge abbestellen</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
