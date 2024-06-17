@@ -89,16 +89,16 @@ button:hover {
     .main-container {
         flex-direction: row;
         justify-content: space-between;
-        margin-top: 15px;
     }
-
-    h1 {
-    text-align: center;
-    color: #003366;
-    margin-top: 15px;
-}
     
     .container {
         width: 48%;
     }
 }
+
+@media (max-width: 768px) {
+    .main-container {
+        flex-direction: row;
+        justify-content: space-between;
+        margin-top: 15px;
+    }
