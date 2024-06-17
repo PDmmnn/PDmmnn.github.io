@@ -98,8 +98,6 @@ button:hover {
 
 @media (max-width: 768px) {
     .main-container {
-        flex-direction: row;
-        justify-content: space-between;
         margin-top: 15px;
     }
 }
