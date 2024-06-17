@@ -1,4 +1,4 @@
-#index
+#suche
 document.getElementById('foerderalertForm').addEventListener('submit', function(event) {
     event.preventDefault();
     alert('Form submitted!');
@@ -8,7 +8,7 @@ function createSearchRequest() {
     alert('Suchauftrag erstellt!');
 }
 
-#Suchauftraege
+#index
 function showSearchOrders() {
     alert('Suchaufträge anzeigen clicked!');
 }
