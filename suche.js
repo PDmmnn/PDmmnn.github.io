@@ -13,6 +13,16 @@ fetch('searchterms.json')
     .then(response => response.json())
     .then(data => searchTerms = data);
 
+let searchTermsFoerderbereichtigt = [];
+fetch('searchterms.json')
+    .then(response => response.json())
+    .then(data => searchTerms = data);
+
+let searchTermsFoerderbereich = [];
+fetch('searchterms.json')
+    .then(response => response.json())
+    .then(data => searchTerms = data);
+
 // Search terms for each search bar
 let searchTermsFoerdergebiet = [
     "Region A",
@@ -40,6 +50,8 @@ let searchTermsFoerdergeber = [
 initializeSearchBar('searchbar', 'dropdown', searchTermsMain);
 initializeSearchBar('foerdergebietbar', 'dropdown-foerdergebiet', searchTermsFoerdergebiet);
 initializeSearchBar('foerdergeberbar', 'dropdown-foerdergeber', searchTermsFoerdergeber);
+initializeSearchBar('foerderberechtigtbar', 'dropdown-foerderberechtigt', searchTermsFoerderbereichtigt);
+initializeSearchBar('foerdergebereichbar', 'dropdown-foerderbereich', searchTermsFoerderbereich);
 
 function initializeSearchBar(inputId, dropdownId, searchTerms) {
     const searchBar = document.getElementById(inputId);
