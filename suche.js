@@ -98,7 +98,7 @@ initializeSearchBar('foerderartbar', 'dropdown-foerderart', searchTermsFoerderar
 initializeSearchBar('foerdergebietbar', 'dropdown-foerdergebiet', searchTermsFoerdergebiet);
 initializeSearchBar('foerdergeberbar', 'dropdown-foerdergeber', searchTermsFoerdergeber);
 initializeSearchBar('foerderberechtigtbar', 'dropdown-foerderberechtigt', searchTermsFoerderberechtigt);
-initializeSearchBar('foerdergebereichbar', 'dropdown-foerderbereich', searchTermsFoerderbereich);
+initializeSearchBar('foerderbereichbar', 'dropdown-foerderbereich', searchTermsFoerderbereich);
 
 function initializeSearchBar(inputId, dropdownId, searchTerms) {
     const searchBar = document.getElementById(inputId);
