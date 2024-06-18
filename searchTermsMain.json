@@ -1,4 +1,4 @@
-searchTermsMain = [
+[
     "Zuschuss",
     "Garantie",
     "Darlehen",
@@ -9,4 +9,4 @@ searchTermsMain = [
     "Subvention",
     "Projektfinanzierung",
     "Investitionszuschuss"
-];
+]
