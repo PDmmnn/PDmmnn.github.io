@@ -80,7 +80,7 @@ let searchTermsFoerdergeber = [
 ];
 
 // Initialize search bars
-initializeSearchBar('searchbar', 'dropdown', searchTermsMain);
+// initializeSearchBar('searchbar', 'dropdown', searchTermsMain);
 initializeSearchBar('foerderartbar', 'dropdown-foerderart', searchTermsFoerderart);
 initializeSearchBar('foerdergebietbar', 'dropdown-foerdergebiet', searchTermsFoerdergebiet);
 initializeSearchBar('foerdergeberbar', 'dropdown-foerdergeber', searchTermsFoerdergeber);
