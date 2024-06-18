@@ -1,1 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FörderAlert Form</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="main-container">
+        <div class="container">
+            <h1>FörderAlert</h1>
+            <form id="foerderalertForm">
+                <!-- Other form fields -->
 
+                <!-- Search Bar for Recommendations -->
+                <label for="searchbar">Search Terms</label>
+                <input type="text" id="searchbar" name="searchbar" placeholder="Start typing...">
+                <div id="dropdown" class="dropdown-content"></div>
+                
+                <!-- Search Bar for Fördergebiet -->
+                <label for="foerdergebietbar">Fördergebiet</label>
+                <input type="text" id="foerdergebietbar" name="foerdergebietbar" placeholder="Start typing...">
+                <div id="dropdown-foerdergebiet" class="dropdown-content"></div>
+                
+                <!-- Search Bar for Fördergeber -->
+                <label for="foerdergeberbar">Fördergeber</label>
+                <input type="text" id="foerdergeberbar" name="foerdergeberbar" placeholder="Start typing...">
+                <div id="dropdown-foerdergeber" class="dropdown-content"></div>
+
+                <div class="button-group">
+                    <button type="submit">Suche</button>
+                    <button type="button" onclick="createSearchRequest()">Suchauftrag erstellen</button>
+                </div>
+            </form>
+        </div>
+        <div class="container">
+            <h1>Ergebnisse</h1>
+            <!-- Add any additional content for the results here -->
+        </div>
+    </div>
+    <script src="script.js"></script>
+    <script>
+        // Fetch the search terms JSON file and initialize the search bars
+        fetch('search_terms.json')
+            .then(response => response.json())
+            .then(data => {
+                initializeSearchBar('searchbar', 'dropdown', data.main);
+                initializeSearchBar('foerdergebietbar', 'dropdown-foerdergebiet', data.foerdergebiet);
+                initializeSearchBar('foerdergeberbar', 'dropdown-foerdergeber', data.foerdergeber);
+            });
+    </script>
+</body>
+</html>
