@@ -24,6 +24,17 @@ fetch('searchTermsFoerderbereich.json')
     .then(data => searchTermsFoerderbereich = data);
 
 // Search terms for each search bar
+let searchTermsFoerderbereich = [
+    "Region A",
+    "Region B",
+    "Region C",
+    "Region D",
+    "Region E",
+    "Region F",
+    "Region G",
+    "Region H"
+];
+
 let searchTermsFoerdergebiet = [
     "Region A",
     "Region B",
