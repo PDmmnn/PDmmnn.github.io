@@ -3,9 +3,13 @@ body {
     background-color: #f4f4f4;
     display: flex;
     justify-content: center;
-    align-items: center;
+    /*align-items: center;
     height: 100vh;
+    margin: 0;*/
+    align-items: flex-start; /* Change this to flex-start */
+    min-height: 100vh; /* Ensure body height covers at least the viewport height */
     margin: 0;
+    padding-top: 20px; /* Add padding to the top */
 }
 
 .main-container {
