@@ -9,7 +9,7 @@ function createSearchRequest() {
 
 // Load search terms from JSON file
 let searchTermsMain = [];
-fetch('searchTermsMain.json')
+fetch('searchterms.json')
     .then(response => response.json())
     .then(data => searchTermsMain = data);
 
