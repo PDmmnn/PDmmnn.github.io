@@ -11,17 +11,17 @@ function createSearchRequest() {
 let searchTermsMain = [];
 fetch('searchterms.json')
     .then(response => response.json())
-    .then(data => searchTerms = data);
+    .then(data => searchTermsMain = data);
 
 let searchTermsFoerderberechtigt = [];
 fetch('searchterms.json')
     .then(response => response.json())
-    .then(data => searchTerms = data);
+    .then(data => searchTermsFoerderberechtigt = data);
 
 let searchTermsFoerderbereich = [];
 fetch('searchterms.json')
     .then(response => response.json())
-    .then(data => searchTerms = data);
+    .then(data => searchTermsFoerderbereich = data);
 
 // Search terms for each search bar
 let searchTermsFoerdergebiet = [
