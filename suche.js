@@ -13,7 +13,7 @@ fetch('searchterms.json')
     .then(response => response.json())
     .then(data => searchTerms = data);
 
-let searchTermsFoerderbereichtigt = [];
+let searchTermsFoerderberechtigt = [];
 fetch('searchterms.json')
     .then(response => response.json())
     .then(data => searchTerms = data);
@@ -50,7 +50,7 @@ let searchTermsFoerdergeber = [
 initializeSearchBar('searchbar', 'dropdown', searchTermsMain);
 initializeSearchBar('foerdergebietbar', 'dropdown-foerdergebiet', searchTermsFoerdergebiet);
 initializeSearchBar('foerdergeberbar', 'dropdown-foerdergeber', searchTermsFoerdergeber);
-initializeSearchBar('foerderberechtigtbar', 'dropdown-foerderberechtigt', searchTermsFoerderbereichtigt);
+initializeSearchBar('foerderberechtigtbar', 'dropdown-foerderberechtigt', searchTermsFoerderberechtigt);
 initializeSearchBar('foerdergebereichbar', 'dropdown-foerderbereich', searchTermsFoerderbereich);
 
 function initializeSearchBar(inputId, dropdownId, searchTerms) {
