@@ -1,0 +1,12 @@
+searchTermsMain = [
+    "Zuschuss",
+    "Garantie",
+    "Darlehen",
+    "Sonstiges",
+    "Beteiligung",
+    "Bürgschaft",
+    "Förderung",
+    "Subvention",
+    "Projektfinanzierung",
+    "Investitionszuschuss"
+];
