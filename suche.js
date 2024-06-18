@@ -18,10 +18,10 @@ fetch('searchTermsFoerderberechtigt.json')
     .then(response => response.json())
     .then(data => searchTermsFoerderberechtigt = data);
 
-let searchTermsFoerderbereich = [];
+/*let searchTermsFoerderbereich = [];
 fetch('searchTermsFoerderbereich.json')
     .then(response => response.json())
-    .then(data => searchTermsFoerderbereich = data);
+    .then(data => searchTermsFoerderbereich = data);*/
 
 // Search terms for each search bar
 let searchTermsFoerderbereich = [
