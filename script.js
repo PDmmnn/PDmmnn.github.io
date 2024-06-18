@@ -30,8 +30,8 @@ function cancelSelectedSearchOrders() {
     }
 }
 
-// Load search terms from JSON file /*
-let searchTerms = [];
+// Load search terms from JSON file 
+/*let searchTerms = [];
 fetch('searchterms.json')
     .then(response => response.json())
     .then(data => searchTerms = data); */
