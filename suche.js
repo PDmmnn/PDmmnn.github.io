@@ -9,17 +9,17 @@ function createSearchRequest() {
 
 // Load search terms from JSON file
 let searchTermsMain = [];
-fetch('searchterms.json')
+fetch('searchTermsMain.json')
     .then(response => response.json())
     .then(data => searchTermsMain = data);
 
 let searchTermsFoerderberechtigt = [];
-fetch('searchterms.json')
+fetch('searchTermsFoerderberechtigt.json')
     .then(response => response.json())
     .then(data => searchTermsFoerderberechtigt = data);
 
 let searchTermsFoerderbereich = [];
-fetch('searchterms.json')
+fetch('searchTermsFoerderbereich.json')
     .then(response => response.json())
     .then(data => searchTermsFoerderbereich = data);
 
