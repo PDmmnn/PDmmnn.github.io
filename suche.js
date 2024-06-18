@@ -16,7 +16,7 @@ fetch('searchterms.json')
 let searchTermsFoerderberechtigt = [];
 fetch('searchTermsFoerderberechtigt.json')
     .then(response => response.json())
-    .then(data => searchTerms = data);
+    .then(data => searchTermsFoerderberechtigt = data);
 
 /*let searchTermsFoerderbereich = [];
 fetch('searchTermsFoerderbereich.json')
