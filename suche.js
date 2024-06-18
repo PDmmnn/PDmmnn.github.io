@@ -8,7 +8,7 @@ function createSearchRequest() {
 }
 
 // Load search terms from JSON file
-let searchTermsMain = [];
+/*let searchTermsMain = [];
 fetch('searchterms.json')
     .then(response => response.json())
     .then(data => searchTermsMain = data);
@@ -18,12 +18,34 @@ fetch('searchtermsfoerderberechtigt.json')
     .then(response => response.json())
     .then(data => searchTermsFoerderberechtigt = data);
 
-/*let searchTermsFoerderbereich = [];
+let searchTermsFoerderbereich = [];
 fetch('searchtermsfoerderbereich.json')
     .then(response => response.json())
     .then(data => searchTermsFoerderbereich = data);*/
 
 // Search terms for each search bar
+let searchTermsFoerderart = [
+    "Region A",
+    "Region B",
+    "Region C",
+    "Region D",
+    "Region E",
+    "Region F",
+    "Region G",
+    "Region H"
+];
+
+let searchTermsFoerderberechtigt = [
+    "Region A",
+    "Region B",
+    "Region C",
+    "Region D",
+    "Region E",
+    "Region F",
+    "Region G",
+    "Region H"
+];
+
 let searchTermsFoerderbereich = [
     "Region A",
     "Region B",
@@ -59,6 +81,7 @@ let searchTermsFoerdergeber = [
 
 // Initialize search bars
 initializeSearchBar('searchbar', 'dropdown', searchTermsMain);
+initializeSearchBar('foerderartbar', 'dropdown-foerderart', searchTermsFoerderart);
 initializeSearchBar('foerdergebietbar', 'dropdown-foerdergebiet', searchTermsFoerdergebiet);
 initializeSearchBar('foerdergeberbar', 'dropdown-foerdergeber', searchTermsFoerdergeber);
 initializeSearchBar('foerderberechtigtbar', 'dropdown-foerderberechtigt', searchTermsFoerderberechtigt);
