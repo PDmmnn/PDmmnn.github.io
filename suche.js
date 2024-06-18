@@ -14,12 +14,12 @@ fetch('searchterms.json')
     .then(data => searchTermsMain = data);
 
 let searchTermsFoerderberechtigt = [];
-fetch('searchTermsFoerderberechtigt.json')
+fetch('searchtermsfoerderberechtigt.json')
     .then(response => response.json())
     .then(data => searchTermsFoerderberechtigt = data);
 
 /*let searchTermsFoerderbereich = [];
-fetch('searchTermsFoerderbereich.json')
+fetch('searchtermsfoerderbereich.json')
     .then(response => response.json())
     .then(data => searchTermsFoerderbereich = data);*/
 
