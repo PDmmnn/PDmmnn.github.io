@@ -8,11 +8,11 @@ function createSearchRequest() {
 }
 
 // Load search terms from JSON file
-/*let searchTermsMain = [];
+let searchTermsMain = [];
 fetch('searchterms.json')
     .then(response => response.json())
     .then(data => searchTermsMain = data);
-
+/*
 let searchTermsFoerderberechtigt = [];
 fetch('searchtermsfoerderberechtigt.json')
     .then(response => response.json())
@@ -80,7 +80,7 @@ let searchTermsFoerdergeber = [
 ];
 
 // Initialize search bars
-// initializeSearchBar('searchbar', 'dropdown', searchTermsMain);
+initializeSearchBar('searchbar', 'dropdown', searchTermsMain);
 initializeSearchBar('foerderartbar', 'dropdown-foerderart', searchTermsFoerderart);
 initializeSearchBar('foerdergebietbar', 'dropdown-foerdergebiet', searchTermsFoerdergebiet);
 initializeSearchBar('foerdergeberbar', 'dropdown-foerdergeber', searchTermsFoerdergeber);
