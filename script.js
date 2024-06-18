@@ -30,11 +30,25 @@ function cancelSelectedSearchOrders() {
     }
 }
 
-// Load search terms from JSON file
+// Load search terms from JSON file /*
 let searchTerms = [];
 fetch('searchterms.json')
     .then(response => response.json())
-    .then(data => searchTerms = data);
+    .then(data => searchTerms = data); */
+
+// Search terms directly in the JavaScript
+let searchTerms = [
+    "Zuschuss",
+    "Garantie",
+    "Darlehen",
+    "Sonstiges",
+    "Beteiligung",
+    "Bürgschaft",
+    "Förderung",
+    "Subvention",
+    "Projektfinanzierung",
+    "Investitionszuschuss"
+];
 
 // Handle the search bar input
 const searchBar = document.getElementById('searchbar');
