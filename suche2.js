@@ -7,20 +7,13 @@ function createSearchRequest() {
     alert('Suchauftrag erstellt!');
 }
 
-// Search terms for each search bar
-let searchTermsMain = [
-    "Zuschuss",
-    "Garantie",
-    "Darlehen",
-    "Sonstiges",
-    "Beteiligung",
-    "Bürgschaft",
-    "Förderung",
-    "Subvention",
-    "Projektfinanzierung",
-    "Investitionszuschuss"
-];
+// Load search terms from JSON file
+let searchTermsMain = [];
+fetch('searchterms.json')
+    .then(response => response.json())
+    .then(data => searchTerms = data);
 
+// Search terms for each search bar
 let searchTermsFoerdergebiet = [
     "Region A",
     "Region B",
