@@ -53,10 +53,24 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     }
     if (percentageMin || percentageMax) {
         // Handle percentage range search
-        const formattedMin = formatPercentage(percentageMin);
-        const formattedMax = formatPercentage(percentageMax);
+        let percentageQuery = '';
 
-        query += query ? ` AND (${formattedMin}).."${formattedMax}" OR "${formattedMax}" (Prozent OR %)` : `(${formattedMin}).."${formattedMax}" OR "${formattedMax}" (Prozent OR %)`;
+        if (percentageMin && percentageMax) {
+            // Both min and max percentages provided
+            const formattedMin = formatPercentage(percentageMin);
+            const formattedMax = formatPercentage(percentageMax);
+            percentageQuery = `"${formattedMin}".."${formattedMax}" OR "${formattedMax}" (Prozent OR %)`;
+        } else if (percentageMin) {
+            // Only min percentage provided
+            const formattedMin = formatPercentage(percentageMin);
+            percentageQuery = `"${formattedMin}" (Prozent OR %)`;
+        } else if (percentageMax) {
+            // Only max percentage provided
+            const formattedMax = formatPercentage(percentageMax);
+            percentageQuery = `".."${formattedMax}" (Prozent OR %)`;
+        }
+
+        query += query ? ` AND (${percentageQuery})` : `(${percentageQuery})`;
     }
     if (foerderartbar) {
         const foerderartTerms = foerderartbar.split(',').map(term => `"${term.trim()}"`).join(' OR ');
