@@ -5,30 +5,30 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
 });
 
 function buildQuery() {
-    const searchbar = document.getElementById('searchbar').value;
-    const foerderartbar = document.getElementById('foerderartbar').value;
-    const foerderbereichbar = document.getElementById('foerderbereichbar').value;
-    const foerderberechtigtbar = document.getElementById('foerderberechtigtbar').value;
-    const foerdergebietbar = document.getElementById('foerdergebietbar').value;
-    const foerdergeberbar = document.getElementById('foerdergeberbar').value;
-    const sonstiges = document.getElementById('sonstiges').value;
+    const sonstiges = document.getElementById('sonstiges').value.trim();
+    const searchbar = document.getElementById('searchbar').value.trim();
+    const foerderartbar = document.getElementById('foerderartbar').value.trim();
+    const foerderbereichbar = document.getElementById('foerderbereichbar').value.trim();
+    const foerderberechtigtbar = document.getElementById('foerderberechtigtbar').value.trim();
+    const foerdergebietbar = document.getElementById('foerdergebietbar').value.trim();
+    const foerdergeberbar = document.getElementById('foerdergeberbar').value.trim();
 
-    let query = '';
-    if (searchbar) query += searchbar + ' ';
-    if (foerderartbar) query += `+${foerderartbar} `;
-    if (foerderbereichbar) query += `+${foerderbereichbar} `;
-    if (foerderberechtigtbar) query += `+${foerderberechtigtbar} `;
-    if (foerdergebietbar) query += `+${foerdergebietbar} `;
-    if (foerdergeberbar) query += `+${foerdergeberbar} `;
-    if (sonstiges) query += sonstiges + ' ';
+    let query = sonstiges || ''; // Initialize with the value from sonstiges or empty string if it's empty
+
+    if (searchbar) query += query ? ` +${searchbar}` : searchbar;
+    if (foerderartbar) query += query ? ` +${foerderartbar}` : foerderartbar;
+    if (foerderbereichbar) query += query ? ` +${foerderbereichbar}` : foerderbereichbar;
+    if (foerderberechtigtbar) query += query ? ` +${foerderberechtigtbar}` : foerderberechtigtbar;
+    if (foerdergebietbar) query += query ? ` +${foerdergebietbar}` : foerdergebietbar;
+    if (foerdergeberbar) query += query ? ` +${foerdergeberbar}` : foerdergeberbar;
 
     return query.trim();
 }
 
 function search(query) {
-    const apiKey = 'AIzaSyAoJA3vFYtqyije1bB9u8flPdn7d2wkKNk';
-    const cx = '57f6eed00529f418c';
-    const url = `https://www.googleapis.com/customsearch/v1?key=${AIzaSyAoJA3vFYtqyije1bB9u8flPdn7d2wkKNk}&cx=${57f6eed00529f418c}&q=${encodeURIComponent(query)}`;
+    const apiKey = 'AIzaSyAoJA3vFYtqyije1bB9u8flPdn7d2wkKNk'; // Replace with your actual API key
+    const cx = '57f6eed00529f418c'; // Replace with your actual Custom Search Engine ID
+    const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${encodeURIComponent(query)}`;
 
     fetch(url)
         .then(response => response.json())
@@ -59,4 +59,50 @@ function displayResults(data) {
 }
 
 // Initialize search bars with autocomplete functionality (if not already included)
-/* existing code for initializing search bars */
+initializeSearchBar('searchbar', 'dropdown', searchTermsMain);
+initializeSearchBar('foerderartbar', 'dropdown-foerderart', searchTermsFoerderart);
+initializeSearchBar('foerdergebietbar', 'dropdown-foerdergebiet', searchTermsFoerdergebiet);
+initializeSearchBar('foerdergeberbar', 'dropdown-foerdergeber', searchTermsFoerdergeber);
+initializeSearchBar('foerderberechtigtbar', 'dropdown-foerderberechtigt', searchTermsFoerderberechtigt);
+initializeSearchBar('foerderbereichbar', 'dropdown-foerderbereich', searchTermsFoerderbereich);
+
+function initializeSearchBar(inputId, dropdownId, searchTerms) {
+    const searchBar = document.getElementById(inputId);
+    const dropdown = document.getElementById(dropdownId);
+
+    searchBar.addEventListener('input', function() {
+        updateDropdown(searchBar, dropdown, searchTerms);
+    });
+
+    searchBar.addEventListener('focus', function() {
+        updateDropdown(searchBar, dropdown, searchTerms);
+    });
+
+    function updateDropdown(searchBar, dropdown, searchTerms) {
+        const input = searchBar.value.toLowerCase().split(',').pop().trim();
+        dropdown.innerHTML = '';
+        const filteredTerms = searchTerms.filter(term => term.toLowerCase().includes(input));
+        filteredTerms.forEach(term => {
+            const div = document.createElement('div');
+            div.textContent = term;
+            div.addEventListener('click', function() {
+                let terms = searchBar.value.split(',').map(t => t.trim());
+                terms.pop(); // Remove the current input
+                terms.push(term); // Add the selected term
+                searchBar.value = terms.join(', ') + ', ';
+                dropdown.style.display = 'none';
+                searchBar.focus();
+            });
+            dropdown.appendChild(div);
+        });
+        dropdown.style.display = filteredTerms.length ? 'block' : 'none';
+    }
+
+    // Hide dropdown if clicked outside
+    document.addEventListener('click', function(event) {
+        if (!searchBar.contains(event.target) && !dropdown.contains(event.target)) {
+            dropdown.style.display = 'none';
+        }
+    });
+}
+
