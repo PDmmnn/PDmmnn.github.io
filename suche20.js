@@ -71,7 +71,10 @@ function displayResults(data) {
 // Function to execute weekly search and send results via email
 function executeWeeklySearch() {
     const searchRequest = JSON.parse(localStorage.getItem('searchRequest'));
-    if (!searchRequest) return;
+    if (!searchRequest) {
+        console.error('No search request found.');
+        return;
+    }
 
     const query = buildQueryForWeeklySearch();
     search(query)
@@ -127,6 +130,27 @@ function sendEmail(subject, body, recipient) {
     // Implement your email sending logic here (e.g., using SendGrid API)
     console.log(`Sending email to ${recipient} with subject: ${subject}\nBody:\n${body}`);
 }
+
+// Function to save search request to localStorage
+function createSearchRequest() {
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+
+    if (!name || !email) {
+        alert('Please fill in Name and Email fields.');
+        return;
+    }
+
+    const searchRequest = {
+        name: name,
+        email: email
+        // You may add more properties from your form as needed
+    };
+
+    localStorage.setItem('searchRequest', JSON.stringify(searchRequest));
+    alert('Search request saved.');
+}
+
 
 
 
