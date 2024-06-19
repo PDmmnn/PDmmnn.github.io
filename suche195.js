@@ -30,6 +30,8 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     const sonstiges = document.getElementById('sonstiges').value.trim();
     const minAmount = document.getElementById('minAmount').value.trim();
     const maxAmount = document.getElementById('maxAmount').value.trim();
+    const percentageMin = document.getElementById('percentageMin').value.trim();
+    const percentageMax = document.getElementById('percentageMax').value.trim();
     const foerderartbar = document.getElementById('foerderartbar').value.trim();
     const foerderbereichbar = document.getElementById('foerderbereichbar').value.trim();
     const foerderberechtigtbar = document.getElementById('foerderberechtigtbar').value.trim();
@@ -49,10 +51,12 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         // Build the query to search for both variations
         query += ` ("${formattedMin}" OR "${minAmount}").."${formattedMax}" OR "${maxAmount}" (Euro OR Eur OR €)`;
     }
-    if (percentageSearch) {
-        // Handle percentage search
-        const formattedPercentage = formatPercentage(percentageSearch);
-        query += query ? ` AND (${formattedPercentage})` : `(${formattedPercentage})`;
+    if (percentageMin || percentageMax) {
+        // Handle percentage range search
+        const formattedMin = formatPercentage(percentageMin);
+        const formattedMax = formatPercentage(percentageMax);
+
+        query += query ? ` AND (${formattedMin}).."${formattedMax}" OR "${formattedMax}" (Prozent OR %)` : `(${formattedMin}).."${formattedMax}" OR "${formattedMax}" (Prozent OR %)`;
     }
     if (foerderartbar) {
         const foerderartTerms = foerderartbar.split(',').map(term => `"${term.trim()}"`).join(' OR ');
