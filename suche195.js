@@ -49,6 +49,11 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         // Build the query to search for both variations
         query += ` ("${formattedMin}" OR "${minAmount}").."${formattedMax}" OR "${maxAmount}" (Euro OR Eur OR €)`;
     }
+    if (percentageSearch) {
+        // Handle percentage search
+        const formattedPercentage = formatPercentage(percentageSearch);
+        query += query ? ` AND (${formattedPercentage})` : `(${formattedPercentage})`;
+    }
     if (foerderartbar) {
         const foerderartTerms = foerderartbar.split(',').map(term => `"${term.trim()}"`).join(' OR ');
         query += query ? ` AND (${foerderartTerms})` : `(${foerderartTerms})`;
@@ -78,6 +83,11 @@ function formatAmount(amountString) {
     return amountString.replace(/\./g, '(\\.?)')
                        .replace(/([0-9,]+) Mio\.?/gi, '$1,?000,000')
                        .replace(/([0-9,]+) Millionen/gi, '$1,?000,000');
+}
+
+function formatPercentage(percentageString) {
+    // Match numbers between 0 and 100 followed by % or Prozent
+    return percentageString.replace(/([0-9]{1,2}) ?[%Prozent]/gi, '$1');
 }
 
     function search(query) {
