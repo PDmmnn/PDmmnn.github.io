@@ -3,13 +3,10 @@ body {
     background-color: #f4f4f4;
     display: flex;
     justify-content: center;
-    /*align-items: center;
-    height: 100vh;
-    margin: 0;*/
-    align-items: flex-start; /* Change this to flex-start */
-    min-height: 100vh; /* Ensure body height covers at least the viewport height */
+    align-items: flex-start; 
+    min-height: 100vh; 
     margin: 0;
-    padding-top: 20px; /* Add padding to the top */
+    padding-top: 20px; 
 }
 
 .main-container {
@@ -102,19 +99,7 @@ button:hover {
         width: 48%;
     }
 }
-/*
-@media (max-width: 768px) {
-    .main-container {
-        margin-top: 500px;
-    }
-    
-    h1 {
-    text-align: center;
-    color: #003366;
-    margin-top: 10px;
-    }
-}
-*/
+
 /* Search Bar Dropdown Styles */
 .dropdown-content {
     position: relative;
