@@ -127,7 +127,7 @@ button:hover {
 /* Sprechblase */
 .tooltip-icon {
     position: relative;
-    cursor: help;
+    cursor: pointer;
     margin-left: 5px;
 }
 
