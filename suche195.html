@@ -17,10 +17,13 @@
                 <label for="email">E-Mail</label>
                 <input type="email" id="email" name="email" placeholder="...">
 
-                <!-- Search Bar for Recommendations -->
+                <!-- Search Bar for Förderhöhe -->
                 <label for="searchbar">Förderhöhe</label>
-                <input type="text" id="searchbar" name="searchbar" placeholder="...">
-                <div id="dropdown" class="dropdown-content"></div>
+                <div class="search-range">
+                    <input type="number" id="minAmount" name="minAmount" placeholder="Min">
+                    <span> - </span>
+                    <input type="number" id="maxAmount" name="maxAmount" placeholder="Max">
+                </div>
                 
                 <!-- Search Bar for Förderart -->
                 <label for="foerderartbar">Förderart</label>
@@ -62,6 +65,6 @@
             <div id="results" class="results"></div>
         </div>
     </div>
-    <script src="suche19.js"></script>
+    <script src="suche195.js"></script>
 </body>
 </html>
