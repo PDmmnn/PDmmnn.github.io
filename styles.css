@@ -124,6 +124,31 @@ button:hover {
 }
 
 
+/* Sprechblase */
+.tooltip-icon {
+    position: relative;
+    cursor: help;
+    margin-left: 5px;
+}
+
+.tooltip-text {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 300px;
+    bottom: -50px;
+    left: 0;
+    z-index: 1;
+}
+
+.tooltip-icon:hover + .tooltip-text {
+    display: block;
+}
+
+
 
  /* Results Container Styles */
         .results {
