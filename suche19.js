@@ -217,6 +217,18 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         });
     }
 
+// JavaScript to toggle tooltip display
+const tooltipIcon = document.getElementById('tooltip-foerdergeber');
+const tooltipText = document.getElementById('tooltip-text-foerdergeber');
+
+tooltipIcon.addEventListener('mouseenter', function() {
+    tooltipText.style.display = 'block';
+});
+
+tooltipIcon.addEventListener('mouseleave', function() {
+    tooltipText.style.display = 'none';
+});
+
 
 
 
