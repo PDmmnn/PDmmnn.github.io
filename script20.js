@@ -19,7 +19,7 @@ function showSearchOrders() {
 
 async function fetchSearchOrders(email) {
     const repoOwner = 'pdmmnn';
-    const repoName = 'Ypdmmnn.github.io';
+    const repoName = 'pdmmnn.github.io';
     const apiUrl = `https://api.github.com/search/issues?q=repo:${repoOwner}/${repoName}+label:search-order+${email}`;
 
     const response = await fetch(apiUrl);
