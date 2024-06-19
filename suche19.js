@@ -166,7 +166,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
 
     const searchTermsFoerdergebiet = [
         "Bremen",
-        "Deutschland",
+        "Deutschland, bundesweit",
         "EU",
         "Niedersachsen"
     ];
