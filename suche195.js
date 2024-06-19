@@ -41,8 +41,13 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     if (sonstiges) {
         query += `(${sonstiges})`;
     }
-    if (minAmount && maxAmount) {
-        query += ` "${minAmount}".."${maxAmount}" (Euro OR Eur OR €)`;
+    if (minAmount || maxAmount) {
+        // Format numbers for search query
+        const formattedMin = formatAmount(minAmount);
+        const formattedMax = formatAmount(maxAmount);
+
+        // Build the query to search for both variations
+        query += ` ("${formattedMin}" OR "${minAmount}").."${formattedMax}" OR "${maxAmount}" (Euro OR Eur OR €)`;
     }
     if (foerderartbar) {
         const foerderartTerms = foerderartbar.split(',').map(term => `"${term.trim()}"`).join(' OR ');
@@ -68,9 +73,9 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     return query.trim();
 }
 
-function parseAmount(amountString) {
-    // Remove dots, but keep dots between digits and two-digits numbers
-    return amountString.replace(/\./g, '').replace(/(\d)(\.)(?=\d{3})/g, '$1');
+function formatAmount(amountString) {
+    // Replace dots with optional regex to match with or without dots
+    return amountString.replace(/\./g, '(\\.?)');
 }
 
     function search(query) {
