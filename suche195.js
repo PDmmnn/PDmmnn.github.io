@@ -68,6 +68,11 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     return query.trim();
 }
 
+function parseAmount(amountString) {
+    // Remove dots, but keep dots between digits and two-digits numbers
+    return amountString.replace(/\./g, '').replace(/(\d)(\.)(?=\d{3})/g, '$1');
+}
+
     function search(query) {
         const apiKey = 'AIzaSyAoJA3vFYtqyije1bB9u8flPdn7d2wkKNk'; // Replace with your actual API key
         const cx = '57f6eed00529f418c'; // Replace with your actual Custom Search Engine ID
