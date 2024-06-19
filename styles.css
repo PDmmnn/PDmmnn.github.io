@@ -41,6 +41,7 @@ label {
     color: #003366;
 }
 
+input[type="number"],
 input[type="text"],
 input[type="email"],
 select {
