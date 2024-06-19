@@ -127,15 +127,16 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     ];
 
     const searchTermsFoerderberechtigt = [
-        "Beteiligung",
-        "Bürgschaft",
-        "Darlehen",
-        "Förderung",
-        "Garantie",
-        "Investitionszuschuss",
-        "Projektfinanzierung",
-        "Subvention",
-        "Zuschuss"
+        "Bildungseinrichtung",
+        "Existenzgründer/in",
+        "Forschungseinrichtung",
+        "Hochschule",
+        "Kommune",
+        "Öffentliche Einrichtung",
+        "Privatperson",
+        "Unternehmen",
+        "Verband",
+        "Vereinigung"
     ];
 
     const searchTermsFoerderbereich = [
