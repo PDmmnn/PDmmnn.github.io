@@ -43,16 +43,27 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     if (sonstiges) {
         query += `(${sonstiges})`;
     }
+     // Amount search
     if (minAmount || maxAmount) {
-        // Format numbers for search query
-        const formattedMin = formatAmount(minAmount);
-        const formattedMax = formatAmount(maxAmount);
-
-        // Build the query to search for both variations
-        query += ` ("${formattedMin}" OR "${minAmount}").."${formattedMax}" OR "${maxAmount}" (Euro OR Eur OR €)`;
+        let amountQuery = '';
+        if (minAmount && maxAmount) {
+            // Both min and max amounts provided
+            const formattedMin = formatAmount(minAmount);
+            const formattedMax = formatAmount(maxAmount);
+            amountQuery = `"${formattedMin}".."${formattedMax}" OR "${formattedMax}" (Euro OR Eur OR €)`;
+        } else if (minAmount) {
+            // Only min amount provided
+            const formattedMin = formatAmount(minAmount);
+            amountQuery = `"${formattedMin}" (Euro OR Eur OR €)`;
+        } else if (maxAmount) {
+            // Only max amount provided
+            const formattedMax = formatAmount(maxAmount);
+            amountQuery = `".."${formattedMax}" (Euro OR Eur OR €)`;
+        }
+        query += query ? ` AND (${amountQuery})` : `(${amountQuery})`;
     }
+    // Percentage search
     if (percentageMin || percentageMax) {
-        // Handle percentage range search
         let percentageQuery = '';
 
         if (percentageMin && percentageMax) {
