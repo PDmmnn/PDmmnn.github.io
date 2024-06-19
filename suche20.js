@@ -1,17 +1,32 @@
-// Event listener for form submission to perform normal search
 document.getElementById('foerderalertForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const query = buildQuery();
-    search(query);
-});
+        event.preventDefault();
+        const query = buildQuery();
+        search(query);
+    });
 
-// Event listener for creating weekly search and sending results via email
-document.getElementById('createWeeklySearchButton').addEventListener('click', function() {
-    executeWeeklySearch();
-});
+    /*function buildQuery() {
+        const sonstiges = document.getElementById('sonstiges').value.trim();
+        const searchbar = document.getElementById('searchbar').value.trim();
+        const foerderartbar = document.getElementById('foerderartbar').value.trim();
+        const foerderbereichbar = document.getElementById('foerderbereichbar').value.trim();
+        const foerderberechtigtbar = document.getElementById('foerderberechtigtbar').value.trim();
+        const foerdergebietbar = document.getElementById('foerdergebietbar').value.trim();
+        const foerdergeberbar = document.getElementById('foerdergeberbar').value.trim();
 
-// Function to build query based on form inputs for normal search
-function buildQuery() {
+        let query = '';
+
+        if (sonstiges) query += sonstiges;
+        if (searchbar) query += query ? ` AND "${searchbar}"` : `"${searchbar}"`;
+        if (foerderartbar) query += query ? ` AND "${foerderartbar}"` : `"${foerderartbar}"`;
+        if (foerderbereichbar) query += query ? ` AND "${foerderbereichbar}"` : `"${foerderbereichbar}"`;
+        if (foerderberechtigtbar) query += query ? ` AND "${foerderberechtigtbar}"` : `"${foerderberechtigtbar}"`;
+        if (foerdergebietbar) query += query ? ` AND "${foerdergebietbar}"` : `"${foerdergebietbar}"`;
+        if (foerdergeberbar) query += query ? ` AND "${foerdergeberbar}"` : `"${foerdergeberbar}"`;
+
+        return query.trim();
+    }*/
+
+    function buildQuery() {
     const sonstiges = document.getElementById('sonstiges').value.trim();
     const searchbar = document.getElementById('searchbar').value.trim();
     const foerderartbar = document.getElementById('foerderartbar').value.trim();
@@ -22,139 +37,69 @@ function buildQuery() {
 
     let query = '';
 
-    if (sonstiges) query += sonstiges;
-    if (searchbar) query += query ? ` AND "${searchbar}"` : `"${searchbar}"`;
-    if (foerderartbar) query += query ? ` AND "${foerderartbar}"` : `"${foerderartbar}"`;
-    if (foerderbereichbar) query += query ? ` AND "${foerderbereichbar}"` : `"${foerderbereichbar}"`;
-    if (foerderberechtigtbar) query += query ? ` AND "${foerderberechtigtbar}"` : `"${foerderberechtigtbar}"`;
-    if (foerdergebietbar) query += query ? ` AND "${foerdergebietbar}"` : `"${foerdergebietbar}"`;
-    if (foerdergeberbar) query += query ? ` AND "${foerdergeberbar}"` : `"${foerdergeberbar}"`;
+    if (sonstiges) {
+        query += `(${sonstiges})`;
+    }
+    if (searchbar) {
+        const searchTerms = searchbar.split(',').map(term => `"${term.trim()}"`).join(' OR ');
+        query += query ? ` AND (${searchTerms})` : `(${searchTerms})`;
+    }
+    if (foerderartbar) {
+        const foerderartTerms = foerderartbar.split(',').map(term => `"${term.trim()}"`).join(' OR ');
+        query += query ? ` AND (${foerderartTerms})` : `(${foerderartTerms})`;
+    }
+    if (foerderbereichbar) {
+        const foerderbereichTerms = foerderbereichbar.split(',').map(term => `"${term.trim()}"`).join(' OR ');
+        query += query ? ` AND (${foerderbereichTerms})` : `(${foerderbereichTerms})`;
+    }
+    if (foerderberechtigtbar) {
+        const foerderberechtigtTerms = foerderberechtigtbar.split(',').map(term => `"${term.trim()}"`).join(' OR ');
+        query += query ? ` AND (${foerderberechtigtTerms})` : `(${foerderberechtigtTerms})`;
+    }
+    if (foerdergebietbar) {
+        const foerdergebietTerms = foerdergebietbar.split(',').map(term => `"${term.trim()}"`).join(' OR ');
+        query += query ? ` AND (${foerdergebietTerms})` : `(${foerdergebietTerms})`;
+    }
+    if (foerdergeberbar) {
+        const foerdergeberTerms = foerdergeberbar.split(',').map(term => `"${term.trim()}"`).join(' OR ');
+        query += query ? ` AND (${foerdergeberTerms})` : `(${foerdergeberTerms})`;
+    }
 
     return query.trim();
 }
 
-// Function to perform search based on query
-function search(query) {
-    const apiKey = 'YOUR_API_KEY'; // Replace with your actual API key
-    const cx = 'YOUR_CUSTOM_SEARCH_ENGINE_ID'; // Replace with your actual Custom Search Engine ID
-    const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${encodeURIComponent(query)}`;
+    function search(query) {
+        const apiKey = 'AIzaSyAoJA3vFYtqyije1bB9u8flPdn7d2wkKNk'; // Replace with your actual API key
+        const cx = '57f6eed00529f418c'; // Replace with your actual Custom Search Engine ID
+        const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${encodeURIComponent(query)}`;
 
-    fetch(url)
-        .then(response => response.json())
-        .then(data => displayResults(data))
-        .catch(error => console.error('Error:', error));
-}
-
-// Function to display search results on the web page
-function displayResults(data) {
-    const resultsDiv = document.getElementById('results');
-    resultsDiv.innerHTML = '';
-
-    if (data.items) {
-        data.items.forEach(item => {
-            const resultItem = document.createElement('div');
-            resultItem.classList.add('result-item');
-            resultItem.innerHTML = `
-                <h2><a href="${item.link}" target="_blank">${item.title}</a></h2>
-                <p>${item.snippet}</p>
-                <div class="result-details">
-                    <span>Link: <a href="${item.link}" target="_blank">${item.displayLink}</a></span>
-                </div>
-            `;
-            resultsDiv.appendChild(resultItem);
-        });
-    } else {
-        resultsDiv.innerHTML = 'No results found';
-    }
-}
-
-// Function to execute weekly search and send results via email
-function executeWeeklySearch() {
-    const searchRequest = JSON.parse(localStorage.getItem('searchRequest'));
-    if (!searchRequest) {
-        console.error('No search request found.');
-        return;
+        fetch(url)
+            .then(response => response.json())
+            .then(data => displayResults(data))
+            .catch(error => console.error('Error:', error));
     }
 
-    const query = buildQueryForWeeklySearch();
-    search(query)
-        .then(data => {
-            const filteredResults = filterResultsForLastSevenDays(data.items);
-            if (filteredResults.length > 0) {
-                const emailSubject = 'Weekly Search Results (Last 7 days)';
-                const emailBody = formatEmailBody(filteredResults);
-                sendEmail(emailSubject, emailBody, searchRequest.email);
-            }
-        })
-        .catch(error => {
-            console.error('Error performing weekly search:', error);
-        });
-}
+    function displayResults(data) {
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = '';
 
-// Function to build query for weekly search (last 7 days)
-function buildQueryForWeeklySearch() {
-    const heute = new Date();
-    const vorSiebenTagen = new Date(heute.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const heuteString = heute.toISOString().split('T')[0];
-    const vorSiebenTagenString = vorSiebenTagen.toISOString().split('T')[0];
-
-    let query = buildQuery(); // Use your existing buildQuery() function
-    query += ` AND date>${vorSiebenTagenString} AND date<${heuteString}`;
-
-    return query;
-}
-
-// Function to filter results for the last 7 days
-function filterResultsForLastSevenDays(items) {
-    const heute = new Date();
-    const vorSiebenTagen = new Date(heute.getTime() - 7 * 24 * 60 * 60 * 1000);
-
-    return items.filter(item => {
-        const itemDate = new Date(item.publishedDate); // Replace with actual date field
-        return itemDate >= vorSiebenTagen && itemDate <= heute;
-    });
-}
-
-// Function to format email body with filtered results
-function formatEmailBody(results) {
-    let emailBody = 'Here are the search results from the last 7 days:\n\n';
-    results.forEach(result => {
-        emailBody += `Title: ${result.title}\n`;
-        emailBody += `Link: ${result.link}\n\n`;
-    });
-    return emailBody;
-}
-
-// Function to send email using SendGrid API (replace with your actual implementation)
-function sendEmail(subject, body, recipient) {
-    // Implement your email sending logic here (e.g., using SendGrid API)
-    console.log(`Sending email to ${recipient} with subject: ${subject}\nBody:\n${body}`);
-}
-
-// Function to save search request to localStorage
-function createSearchRequest() {
-    const name = document.getElementById('name').value.trim();
-    const email = document.getElementById('email').value.trim();
-
-    if (!name || !email) {
-        alert('Please fill in Name and Email fields.');
-        return;
+        if (data.items) {
+            data.items.forEach(item => {
+                const resultItem = document.createElement('div');
+                resultItem.classList.add('result-item');
+                resultItem.innerHTML = `
+                    <h2><a href="${item.link}" target="_blank">${item.title}</a></h2>
+                    <p>${item.snippet}</p>
+                    <div class="result-details">
+                        <span>Link: <a href="${item.link}" target="_blank">${item.displayLink}</a></span>
+                    </div>
+                `;
+                resultsDiv.appendChild(resultItem);
+            });
+        } else {
+            resultsDiv.innerHTML = 'No results found';
+        }
     }
-
-    const searchRequest = {
-        name: name,
-        email: email
-        // You may add more properties from your form as needed
-    };
-
-    localStorage.setItem('searchRequest', JSON.stringify(searchRequest));
-    alert('Search request saved.');
-}
-
-
-
-
-
 // Search terms for each search bar
     const searchTermsMain = [
         "Zuschuss",
@@ -170,58 +115,67 @@ function createSearchRequest() {
     ];
 
     const searchTermsFoerderart = [
-        "Region A",
-        "Region B",
-        "Region C",
-        "Region D",
-        "Region E",
-        "Region F",
-        "Region G",
-        "Region H"
+        "Beteiligung",
+        "Bürgschaft",
+        "Darlehen",
+        "Förderung",
+        "Garantie",
+        "Investitionszuschuss",
+        "Projektfinanzierung",
+        "Subvention",
+        "Zuschuss"
     ];
 
     const searchTermsFoerderberechtigt = [
-        "Region A",
-        "Region B",
-        "Region C",
-        "Region D",
-        "Region E",
-        "Region F",
-        "Region G",
-        "Region H"
+        "Bildungseinrichtung",
+        "Existenzgründer/in",
+        "Forschungseinrichtung",
+        "Hochschule",
+        "Kommune",
+        "Öffentliche Einrichtung",
+        "Privatperson",
+        "Unternehmen",
+        "Verband",
+        "Vereinigung"
     ];
 
     const searchTermsFoerderbereich = [
-        "Region A",
-        "Region B",
-        "Region C",
-        "Region D",
-        "Region E",
-        "Region F",
-        "Region G",
-        "Region H"
-    ];
+    "Arbeit",
+    "Aus- & Weiterbildung",
+    "Außenwirtschaft",
+    "Beratung",
+    "Corona-Hilfe",
+    "Digitalisierung",
+    "Energieeffizienz & Erneuerbare Energien",
+    "Existenzgründung & -festigung",
+    "Forschung & Innovation (themenoffen)",
+    "Forschung & Innovation (themenspezifisch)",
+    "Frauenförderung",
+    "Gesundheit & Soziales",
+    "Infrastruktur",
+    "Kultur, Medien & Sport",
+    "Landwirtschaft & Ländliche Entwicklung",
+    "Messen & Ausstellungen",
+    "Mobilität",
+    "Regionalförderung",
+    "Smart Cities & Regionen",
+    "Städtebau & Stadterneuerung",
+    "Umwelt- & Naturschutz",
+    "Unternehmensfinanzierung",
+    "Wohnungsbau & Modernisierung"
+];
 
     const searchTermsFoerdergebiet = [
-        "Region A",
-        "Region B",
-        "Region C",
-        "Region D",
-        "Region E",
-        "Region F",
-        "Region G",
-        "Region H"
+        "Bremen",
+        "Deutschland, bundesweit",
+        "EU",
+        "Niedersachsen"
     ];
 
     const searchTermsFoerdergeber = [
-        "Institution A",
-        "Institution B",
-        "Institution C",
-        "Institution D",
-        "Institution E",
-        "Institution F",
-        "Institution G",
-        "Institution H"
+        "Bund",
+        "EU",
+        "Land"
     ];
 
     // Initialize search bars with autocomplete functionality
@@ -271,3 +225,119 @@ function createSearchRequest() {
             }
         });
     }
+
+// JavaScript to toggle tooltip display
+const tooltipIcon = document.getElementById('tooltip-foerdergeber');
+const tooltipText = document.getElementById('tooltip-text-foerdergeber');
+
+tooltipIcon.addEventListener('click', function() {
+    tooltipText.style.display = tooltipText.style.display === 'block' ? 'none' : 'block';
+});
+
+// Close tooltip if clicked outside
+document.addEventListener('click', function(event) {
+    if (!tooltipIcon.contains(event.target)) {
+        tooltipText.style.display = 'none';
+    }
+});
+
+// Prevent closing tooltip on clicks inside the tooltip itself
+tooltipText.addEventListener('click', function(event) {
+    event.stopPropagation();
+});
+
+// Toggle tooltip on touch for mobile devices
+tooltipIcon.addEventListener('touchstart', function(event) {
+    event.preventDefault(); // Prevents click from being fired
+    tooltipText.style.display = tooltipText.style.display === 'block' ? 'none' : 'block';
+});
+
+// Close tooltip on touch outside the tooltip itself
+document.addEventListener('touchstart', function(event) {
+    if (!tooltipIcon.contains(event.target)) {
+        tooltipText.style.display = 'none';
+    }
+});
+
+
+
+
+
+
+
+
+
+// Storing Search Query
+function createSearchRequest() {
+    const formData = {
+        name: document.getElementById('name').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        searchQuery: buildQuery()
+    };
+
+    localStorage.setItem('searchRequest', JSON.stringify(formData));
+}
+
+// Execute search and email results every week
+function executeWeeklySearch() {
+    const searchRequest = JSON.parse(localStorage.getItem('searchRequest'));
+    if (!searchRequest) return;
+
+    const query = searchRequest.searchQuery;
+    search(query); // Perform the search as defined in your `search` function
+
+    const email = searchRequest.email;
+    // Implement email sending logic here (see next section)
+}
+
+// Trigger the execution initially and then every week
+executeWeeklySearch(); // Execute immediately
+setInterval(executeWeeklySearch, 7 * 24 * 60 * 60 * 1000); // Repeat every week
+
+// Sending Email
+function sendEmail(subject, body, recipientEmail) {
+    const apiKey = 'YOUR_SENDGRID_API_KEY'; // Replace with your SendGrid API key
+    const url = 'https://api.sendgrid.com/v3/mail/send';
+
+    const data = {
+        personalizations: [{
+            to: [{ email: recipientEmail }],
+            subject: subject,
+        }],
+        from: { email: 'your@email.com' }, // Replace with your sender email
+        content: [{
+            type: 'text/plain',
+            value: body,
+        }],
+    };
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to send email');
+        }
+        console.log('Email sent successfully');
+    })
+    .catch(error => console.error('Error sending email:', error));
+}
+
+// Call sendEmail function in executeWeeklySearch after performing search
+// Example:
+function executeWeeklySearch() {
+    // Previous code...
+    const email = searchRequest.email;
+    search(query); // Perform the search
+
+    // Assuming you have results in `data`, prepare email content
+    const emailSubject = 'Weekly Search Results';
+    const emailBody = 'Results: ' + JSON.stringify(data);
+
+    sendEmail(emailSubject, emailBody, email);
+}
