@@ -1,6 +1,66 @@
-#index
+// script.js
+
 function showSearchOrders() {
-    alert('Suchaufträge anzeigen clicked!');
+    const email = document.getElementById('email').value.trim();
+    if (!email) {
+        alert('Bitte geben Sie eine E-Mail-Adresse ein.');
+        return;
+    }
+
+    fetchSearchOrders(email)
+        .then(searchOrders => {
+            displaySearchOrders(searchOrders);
+        })
+        .catch(error => {
+            console.error('Error fetching search orders:', error);
+            alert('Fehler beim Abrufen der Suchaufträge. Bitte versuchen Sie es später erneut.');
+        });
+}
+
+async function fetchSearchOrders(email) {
+    const repoOwner = 'YOUR_GITHUB_USERNAME';
+    const repoName = 'YOUR_REPO_NAME';
+    const apiUrl = `https://api.github.com/search/issues?q=repo:${repoOwner}/${repoName}+label:search-order+${email}`;
+
+    const response = await fetch(apiUrl);
+    if (!response.ok) {
+        throw new Error('Failed to fetch search orders');
+    }
+
+    const data = await response.json();
+    return data.items.map(item => ({
+        id: item.id,
+        title: item.title,
+        url: item.html_url
+    }));
+}
+
+function displaySearchOrders(searchOrders) {
+    const searchOrdersList = document.getElementById('searchOrdersList');
+    searchOrdersList.innerHTML = '';
+
+    searchOrders.forEach(order => {
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.name = 'searchOrder';
+        checkbox.value = order.id; // Use ID or unique identifier
+
+        const label = document.createElement('label');
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(order.title));
+        
+        if (order.url) {
+            const link = document.createElement('a');
+            link.href = order.url;
+            link.textContent = 'öffnen';
+            link.target = '_blank'; // Open link in new tab
+            label.appendChild(link);
+        }
+
+        const div = document.createElement('div');
+        div.appendChild(label);
+        searchOrdersList.appendChild(div);
+    });
 }
 
 function createNewSearchOrder() {
@@ -13,50 +73,6 @@ function cancelSelectedSearchOrders() {
         let selectedOrders = [];
         checkboxes.forEach((checkbox) => {
             selectedOrders.push(checkbox.value);
-        });
-        alert('Markierte Suchaufträge abbestellen: ' + selectedOrders.join(', '));
-    } else {
-        alert('Keine Suchaufträge ausgewählt.');
-    }
-}
-
-
-
-// Function to show existing search orders
-function showSearchOrders() {
-    const email = document.getElementById('email').value.trim();
-    // Assuming you have stored search orders somehow, fetch or from localStorage
-    // Example: Replace this with actual logic to retrieve stored search orders
-    const searchOrders = [
-        { id: 'suchauftrag1', name: 'Infrastruktur' },
-        { id: 'suchauftrag2', name: 'Suchauftrag 2' },
-        { id: 'suchauftrag3', name: 'Suchauftrag 3' }
-    ];
-
-    const container = document.getElementById('searchOrdersContainer');
-    container.innerHTML = ''; // Clear previous content
-
-    searchOrders.forEach(order => {
-        const label = document.createElement('label');
-        label.innerHTML = `<input type="checkbox" name="searchOrder" value="${order.id}"> ${order.name}`;
-        container.appendChild(label);
-    });
-}
-
-// Function to create a new search order
-function createNewSearchOrder() {
-    // Redirect to the search page or modify as needed
-    window.location.href = 'https://pdmmnn.github.io/suche.html';
-}
-
-// Function to cancel selected search orders
-function cancelSelectedSearchOrders() {
-    const checkboxes = document.querySelectorAll('input[name="searchOrder"]:checked');
-    if (checkboxes.length > 0) {
-        let selectedOrders = [];
-        checkboxes.forEach((checkbox) => {
-            selectedOrders.push(checkbox.value);
-            // Optionally, you might want to remove the canceled order from storage here
         });
         alert('Markierte Suchaufträge abbestellen: ' + selectedOrders.join(', '));
     } else {
