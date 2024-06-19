@@ -75,7 +75,9 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
 
 function formatAmount(amountString) {
     // Replace dots with optional regex to match with or without dots
-    return amountString.replace(/\./g, '(\\.?)');
+    return amountString.replace(/\./g, '(\\.?)')
+                       .replace(/([0-9,]+) Mio\.?/gi, '$1,?000,000')
+                       .replace(/([0-9,]+) Millionen/gi, '$1,?000,000');
 }
 
     function search(query) {
