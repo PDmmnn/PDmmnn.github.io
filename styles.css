@@ -136,10 +136,16 @@ button:hover {
             padding: 15px;
             border-radius: 10px;
             margin-bottom: 10px;
+            a {text-decoration: none;
+              color: white;
+              }
         }
 
         .result-item h2 {
             margin-top: 0;
+            a {text-decoration: none;
+              color: white;
+              }
         }
 
         .result-details {
