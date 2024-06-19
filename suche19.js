@@ -221,13 +221,35 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
 const tooltipIcon = document.getElementById('tooltip-foerdergeber');
 const tooltipText = document.getElementById('tooltip-text-foerdergeber');
 
-tooltipIcon.addEventListener('mouseenter', function() {
-    tooltipText.style.display = 'block';
+tooltipIcon.addEventListener('click', function() {
+    tooltipText.style.display = tooltipText.style.display === 'block' ? 'none' : 'block';
 });
 
-tooltipIcon.addEventListener('mouseleave', function() {
-    tooltipText.style.display = 'none';
+// Close tooltip if clicked outside
+document.addEventListener('click', function(event) {
+    if (!tooltipIcon.contains(event.target)) {
+        tooltipText.style.display = 'none';
+    }
 });
+
+// Prevent closing tooltip on clicks inside the tooltip itself
+tooltipText.addEventListener('click', function(event) {
+    event.stopPropagation();
+});
+
+// Toggle tooltip on touch for mobile devices
+tooltipIcon.addEventListener('touchstart', function(event) {
+    event.preventDefault(); // Prevents click from being fired
+    tooltipText.style.display = tooltipText.style.display === 'block' ? 'none' : 'block';
+});
+
+// Close tooltip on touch outside the tooltip itself
+document.addEventListener('touchstart', function(event) {
+    if (!tooltipIcon.contains(event.target)) {
+        tooltipText.style.display = 'none';
+    }
+});
+
 
 
 
