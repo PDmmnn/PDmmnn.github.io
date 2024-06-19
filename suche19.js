@@ -174,3 +174,85 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
             }
         });
     }
+
+
+
+
+
+
+
+
+// Storing Search Query
+function createSearchRequest() {
+    const formData = {
+        name: document.getElementById('name').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        searchQuery: buildQuery()
+    };
+
+    localStorage.setItem('searchRequest', JSON.stringify(formData));
+}
+
+// Execute search and email results every week
+function executeWeeklySearch() {
+    const searchRequest = JSON.parse(localStorage.getItem('searchRequest'));
+    if (!searchRequest) return;
+
+    const query = searchRequest.searchQuery;
+    search(query); // Perform the search as defined in your `search` function
+
+    const email = searchRequest.email;
+    // Implement email sending logic here (see next section)
+}
+
+// Trigger the execution initially and then every week
+executeWeeklySearch(); // Execute immediately
+setInterval(executeWeeklySearch, 7 * 24 * 60 * 60 * 1000); // Repeat every week
+
+// Sending Email
+function sendEmail(subject, body, recipientEmail) {
+    const apiKey = 'YOUR_SENDGRID_API_KEY'; // Replace with your SendGrid API key
+    const url = 'https://api.sendgrid.com/v3/mail/send';
+
+    const data = {
+        personalizations: [{
+            to: [{ email: recipientEmail }],
+            subject: subject,
+        }],
+        from: { email: 'your@email.com' }, // Replace with your sender email
+        content: [{
+            type: 'text/plain',
+            value: body,
+        }],
+    };
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to send email');
+        }
+        console.log('Email sent successfully');
+    })
+    .catch(error => console.error('Error sending email:', error));
+}
+
+// Call sendEmail function in executeWeeklySearch after performing search
+// Example:
+function executeWeeklySearch() {
+    // Previous code...
+    const email = searchRequest.email;
+    search(query); // Perform the search
+
+    // Assuming you have results in `data`, prepare email content
+    const emailSubject = 'Weekly Search Results';
+    const emailBody = 'Results: ' + JSON.stringify(data);
+
+    sendEmail(emailSubject, emailBody, email);
+}
