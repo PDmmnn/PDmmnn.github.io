@@ -115,58 +115,66 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     ];
 
     const searchTermsFoerderart = [
-        "Region A",
-        "Region B",
-        "Region C",
-        "Region D",
-        "Region E",
-        "Region F",
-        "Region G",
-        "Region H"
+        "Beteiligung",
+        "Bürgschaft",
+        "Darlehen",
+        "Förderung",
+        "Garantie",
+        "Investitionszuschuss",
+        "Projektfinanzierung",
+        "Subvention",
+        "Zuschuss"
     ];
 
     const searchTermsFoerderberechtigt = [
-        "Region A",
-        "Region B",
-        "Region C",
-        "Region D",
-        "Region E",
-        "Region F",
-        "Region G",
-        "Region H"
+        "Beteiligung",
+        "Bürgschaft",
+        "Darlehen",
+        "Förderung",
+        "Garantie",
+        "Investitionszuschuss",
+        "Projektfinanzierung",
+        "Subvention",
+        "Zuschuss"
     ];
 
     const searchTermsFoerderbereich = [
-        "Region A",
-        "Region B",
-        "Region C",
-        "Region D",
-        "Region E",
-        "Region F",
-        "Region G",
-        "Region H"
-    ];
+    "Arbeit",
+    "Aus- & Weiterbildung",
+    "Außenwirtschaft",
+    "Beratung",
+    "Corona-Hilfe",
+    "Digitalisierung",
+    "Energieeffizienz & Erneuerbare Energien",
+    "Existenzgründung & -festigung",
+    "Forschung & Innovation (themenoffen)",
+    "Forschung & Innovation (themenspezifisch)",
+    "Frauenförderung",
+    "Gesundheit & Soziales",
+    "Infrastruktur",
+    "Kultur, Medien & Sport",
+    "Landwirtschaft & Ländliche Entwicklung",
+    "Messen & Ausstellungen",
+    "Mobilität",
+    "Regionalförderung",
+    "Smart Cities & Regionen",
+    "Städtebau & Stadterneuerung",
+    "Umwelt- & Naturschutz",
+    "Unternehmensfinanzierung",
+    "Wohnungsbau & Modernisierung"
+];
 
     const searchTermsFoerdergebiet = [
-        "Region A",
-        "Region B",
-        "Region C",
-        "Region D",
-        "Region E",
-        "Region F",
-        "Region G",
-        "Region H"
+        "Bremen",
+        "Deutschland",
+        "EU",
+        "Niedersachsen"
     ];
 
     const searchTermsFoerdergeber = [
-        "Institution A",
-        "Institution B",
-        "Institution C",
-        "Institution D",
-        "Institution E",
-        "Institution F",
-        "Institution G",
-        "Institution H"
+        "Bund",
+        "EU",
+        "Land"
     ];
 
     // Initialize search bars with autocomplete functionality
