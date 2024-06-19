@@ -311,3 +311,41 @@ function saveFormDataToGitHubIssues(formData) {
         alert('Failed to save search request. Please try again later.');
     });
 }
+
+
+
+
+
+async function triggerGitHubAction(formResponse) {
+  const url = 'https://api.github.com/repos/<your-username>/<your-repo>/actions/workflows/create-issue.yml/dispatches';
+  const token = 'YOUR_GITHUB_PERSONAL_ACCESS_TOKEN'; // You'd retrieve this securely
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      ref: 'main', // or the branch you want to run the workflow on
+      inputs: {
+        response: formResponse // pass your form response here
+      }
+    })
+  });
+
+  if (response.ok) {
+    console.log('GitHub Action triggered successfully');
+  } else {
+    console.error('Failed to trigger GitHub Action:', response.statusText);
+  }
+}
+
+// Example form submission handler
+document.getElementById('yourForm').addEventListener('submit', function(event) {
+  event.preventDefault();
+  const formResponse = new FormData(event.target).entries();
+  triggerGitHubAction(Object.fromEntries(formResponse));
+});
+
