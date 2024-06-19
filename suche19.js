@@ -4,7 +4,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         search(query);
     });
 
-    function buildQuery() {
+    /*function buildQuery() {
         const sonstiges = document.getElementById('sonstiges').value.trim();
         const searchbar = document.getElementById('searchbar').value.trim();
         const foerderartbar = document.getElementById('foerderartbar').value.trim();
@@ -24,7 +24,49 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         if (foerdergeberbar) query += query ? ` AND "${foerdergeberbar}"` : `"${foerdergeberbar}"`;
 
         return query.trim();
+    }*/
+
+    function buildQuery() {
+    const sonstiges = document.getElementById('sonstiges').value.trim();
+    const searchbar = document.getElementById('searchbar').value.trim();
+    const foerderartbar = document.getElementById('foerderartbar').value.trim();
+    const foerderbereichbar = document.getElementById('foerderbereichbar').value.trim();
+    const foerderberechtigtbar = document.getElementById('foerderberechtigtbar').value.trim();
+    const foerdergebietbar = document.getElementById('foerdergebietbar').value.trim();
+    const foerdergeberbar = document.getElementById('foerdergeberbar').value.trim();
+
+    let query = '';
+
+    if (sonstiges) {
+        query += `(${sonstiges})`;
     }
+    if (searchbar) {
+        const searchTerms = searchbar.split(',').map(term => `"${term.trim()}"`).join(' OR ');
+        query += query ? ` AND (${searchTerms})` : `(${searchTerms})`;
+    }
+    if (foerderartbar) {
+        const foerderartTerms = foerderartbar.split(',').map(term => `"${term.trim()}"`).join(' OR ');
+        query += query ? ` AND (${foerderartTerms})` : `(${foerderartTerms})`;
+    }
+    if (foerderbereichbar) {
+        const foerderbereichTerms = foerderbereichbar.split(',').map(term => `"${term.trim()}"`).join(' OR ');
+        query += query ? ` AND (${foerderbereichTerms})` : `(${foerderbereichTerms})`;
+    }
+    if (foerderberechtigtbar) {
+        const foerderberechtigtTerms = foerderberechtigtbar.split(',').map(term => `"${term.trim()}"`).join(' OR ');
+        query += query ? ` AND (${foerderberechtigtTerms})` : `(${foerderberechtigtTerms})`;
+    }
+    if (foerdergebietbar) {
+        const foerdergebietTerms = foerdergebietbar.split(',').map(term => `"${term.trim()}"`).join(' OR ');
+        query += query ? ` AND (${foerdergebietTerms})` : `(${foerdergebietTerms})`;
+    }
+    if (foerdergeberbar) {
+        const foerdergeberTerms = foerdergeberbar.split(',').map(term => `"${term.trim()}"`).join(' OR ');
+        query += query ? ` AND (${foerdergeberTerms})` : `(${foerdergeberTerms})`;
+    }
+
+    return query.trim();
+}
 
     function search(query) {
         const apiKey = 'AIzaSyAoJA3vFYtqyije1bB9u8flPdn7d2wkKNk'; // Replace with your actual API key
