@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FörderAlert Form</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="main-container">
+        <div class="container">
+            <h1><a href="https://pdmmnn.github.io">FörderAlert</a></h1>
+            <form id="foerderalertForm">
+                <label for="name">Name Suchauftrag</label>
+                <input type="text" id="name" name="name" placeholder="...">
+
+                <label for="email">E-Mail</label>
+                <input type="email" id="email" name="email" placeholder="...">
+
+                <!-- Search Bar for Recommendations -->
+                <label for="searchbar">Förderhöhe</label>
+                <input type="text" id="searchbar" name="searchbar" placeholder="...">
+                <div id="dropdown" class="dropdown-content"></div>
+                
+                <!-- Search Bar for Förderart -->
+                <label for="foerderartbar">Förderart</label>
+                <input type="text" id="foerderartbar" name="foerderartbar" placeholder="...">
+                <div id="dropdown-foerderart" class="dropdown-content"></div>
+
+                <!-- Search Bar for Förderbereich -->
+                <label for="foerderbereichbar">Förderbereich</label>
+                <input type="text" id="foerderbereichbar" name="foerderbereichbar" placeholder="...">
+                <div id="dropdown-foerderbereich" class="dropdown-content"></div>
+
+                <!-- Search Bar for Förderberechtigt -->
+                <label for="foerderberechtigtbar">Förderberechtigt</label>
+                <input type="text" id="foerderberechtigtbar" name="foerderberechtigtbar" placeholder="...">
+                <div id="dropdown-foerderberechtigt" class="dropdown-content"></div>
+                
+                <!-- Search Bar for Fördergebiet -->
+                <label for="foerdergebietbar">Fördergebiet</label>
+                <input type="text" id="foerdergebietbar" name="foerdergebietbar" placeholder="...">
+                <div id="dropdown-foerdergebiet" class="dropdown-content"></div>
+                
+                <!-- Search Bar for Fördergeber -->
+                <label for="foerdergeberbar">Fördergeber</label>
+                <input type="text" id="foerdergeberbar" name="foerdergeberbar" placeholder="...">
+                <div id="dropdown-foerdergeber" class="dropdown-content"></div>
+
+                <label for="sonstiges">Spezifische Suchbegriffe</label>
+                <input type="text" id="sonstiges" name="sonstiges" placeholder="Suchbegriff, Suchbegri*, *uchbegri*, Su*griff, Suchbegriff AND Suchbegriff, Suchbegriff OR (Suchbegriff AND Suchbegriff)">
+
+                <div class="button-group">
+                    <button type="submit">Suche</button>
+                    <button type="button" onclick="createSearchRequest()">Suchauftrag erstellen</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="container">
+            <h1>Ergebnisse</h1>
+            <div id="results" class="results"></div>
+        </div>
+    </div>
+    <script src="suche19.js"></script>
+</body>
+</html>
