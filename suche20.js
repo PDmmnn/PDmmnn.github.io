@@ -317,7 +317,7 @@ function saveFormDataToGitHubIssues(formData) {
 
 
 async function triggerGitHubAction(formResponse) {
-  const url = 'https://api.github.com/repos/<your-username>/<your-repo>/actions/workflows/create-issue.yml/dispatches';
+  const url = 'https://api.github.com/repos/pdmmnn/pdmmnn.github.io/actions/workflows/create-issue.yml/dispatches';
   const token = 'YOUR_GITHUB_PERSONAL_ACCESS_TOKEN'; // You'd retrieve this securely
 
   const response = await fetch(url, {
