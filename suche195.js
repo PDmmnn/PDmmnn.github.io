@@ -101,19 +101,6 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         }
     }
 // Search terms for each search bar
-    const searchTermsMain = [
-        "Zuschuss",
-        "Garantie",
-        "Darlehen",
-        "Sonstiges",
-        "Beteiligung",
-        "Bürgschaft",
-        "Förderung",
-        "Subvention",
-        "Projektfinanzierung",
-        "Investitionszuschuss"
-    ];
-
     const searchTermsFoerderart = [
         "Beteiligung",
         "Bürgschaft",
@@ -179,7 +166,6 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     ];
 
     // Initialize search bars with autocomplete functionality
-    initializeSearchBar('searchbar', 'dropdown', searchTermsMain);
     initializeSearchBar('foerderartbar', 'dropdown-foerderart', searchTermsFoerderart);
     initializeSearchBar('foerdergebietbar', 'dropdown-foerdergebiet', searchTermsFoerdergebiet);
     initializeSearchBar('foerdergeberbar', 'dropdown-foerdergeber', searchTermsFoerdergeber);
