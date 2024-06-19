@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FörderAlert</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>FörderAlert</h1>
+        
+        <!-- Form for managing search orders -->
+        <form id="searchOrdersForm">
+            <label for="email">E-Mail</label>
+            <input type="email" id="email" name="email" placeholder="...">
+            <button type="button" onclick="showSearchOrders()">Suchaufträge anzeigen</button>
+        </form>
+        
+        <!-- Display saved search orders with checkboxes -->
+        <div id="searchOrdersContainer" class="search-orders">
+            <!-- This div will be populated dynamically -->
+        </div>
+
+        <!-- Button group for managing search orders -->
+        <div class="button-group">
+            <button type="button" onclick="createNewSearchOrder()">Neuen Suchauftrag anlegen</button>
+            <button type="button" onclick="cancelSelectedSearchOrders()" class="cancel-button">Markierte Suchaufträge abbestellen</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="suche20.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
