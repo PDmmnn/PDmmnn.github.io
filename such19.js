@@ -26,7 +26,7 @@ function buildQuery() {
 }
 
 function search(query) {
-    const apiKey = 'YOUR_API_KEY';
+    const apiKey = 'AIzaSyAoJA3vFYtqyije1bB9u8flPdn7d2wkKNk';
     const cx = '57f6eed00529f418c';
     const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${encodeURIComponent(query)}`;
 
