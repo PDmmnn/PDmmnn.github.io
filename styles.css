@@ -118,14 +118,14 @@ button:hover {
 
 @media (max-width: 767px) {
     body {
-        background-color: white;
+        /*background-color: white;*/
         padding: 0;
         width: 100%;
     }
 
     .container {
         border-radius: 0px;
-        box-shadow: 0 0 0px rgba(0, 0, 0, 0);
+        /*box-shadow: 0 0 0px rgba(0, 0, 0, 0);*/
         padding: 10px;
         margin: 0;
         width: 100%;
