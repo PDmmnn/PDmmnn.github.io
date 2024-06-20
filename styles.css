@@ -116,6 +116,20 @@ button:hover {
     }
 }
 
+@media (max-width: 767px) {
+    body {
+        background-color: white;
+    }
+
+    .container {
+        padding: 0px;
+        border-radius: 0px;
+        box-shadow: 0 0 0px rgba(0, 0, 0, 0);
+        margin: 10px;
+    }
+}
+
+
 /* Search Bar Dropdown Styles */
 .dropdown-content {
     position: relative;
