@@ -129,6 +129,9 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         const foerdergeberTerms = foerdergeberbar.split(',').map(term => `"${term.trim()}"`).join(' OR ');
         query += query ? ` AND (${foerdergeberTerms})` : `(${foerdergeberTerms})`;
     }
+    // Exclude specific subsite
+    const excludedSubsite = '-inurl:/SiteGlobals/FDB/Forms/Suche';
+    query += query ? ` AND ${excludedSubsite}` : excludedSubsite;
 
     return query.trim();
 }
