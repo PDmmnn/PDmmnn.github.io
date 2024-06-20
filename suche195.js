@@ -152,26 +152,29 @@ function search(query) {
 }
 
     function displayResults(data) {
-        const resultsDiv = document.getElementById('results');
-        resultsDiv.innerHTML = '';
+    console.log(data); // Log data to inspect its structure and contents
 
-        if (data.items) {
-            data.items.forEach(item => {
-                const resultItem = document.createElement('div');
-                resultItem.classList.add('result-item');
-                resultItem.innerHTML = `
-                    <h2><a href="${item.link}" target="_blank">${item.title}</a></h2>
-                    <p>${item.snippet}</p>
-                    <div class="result-details">
-                        <span>Link: <a href="${item.link}" target="_blank">${item.displayLink}</a></span>
-                    </div>
-                `;
-                resultsDiv.appendChild(resultItem);
-            });
-        } else {
-            resultsDiv.innerHTML = 'No results found';
-        }
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = '';
+
+    if (data.items) {
+        data.items.forEach(item => {
+            const resultItem = document.createElement('div');
+            resultItem.classList.add('result-item');
+            resultItem.innerHTML = `
+                <h2><a href="${item.link}" target="_blank">${item.title}</a></h2>
+                <p>${item.snippet}</p>
+                <div class="result-details">
+                    <span>Link: <a href="${item.link}" target="_blank">${item.displayLink}</a></span>
+                </div>
+            `;
+            resultsDiv.appendChild(resultItem);
+        });
+    } else {
+        resultsDiv.innerHTML = 'No results found';
     }
+}
+
 // Search terms for each search bar
     const searchTermsFoerderart = [
         "Beteiligung",
