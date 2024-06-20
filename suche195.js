@@ -113,57 +113,39 @@ function formatPercentage(percentageString) {
     return percentageString.replace(/([0-9]{1,2}) ?[%Prozent]/gi, '$1');
 }
 
+function search(query) {
         const apiKey = 'AIzaSyAoJA3vFYtqyije1bB9u8flPdn7d2wkKNk'; // Replace with your actual API key
         const cx = '57f6eed00529f418c'; // Replace with your actual Custom Search Engine ID
+        const excludePath = 'foerderdatenbank.de/SiteGlobals/FDB/Forms/Suche/Expertensuche_Formular.html';
+        const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${encodeURIComponent(query)}`;
 
-        function performSearch() {
-            const query = document.getElementById('search-query').value;
-            const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${encodeURIComponent(query)}`;
-            
-            // Show the progress bar
-            const progressBar = document.getElementById('progress-bar');
-            progressBar.style.width = '50%';
-            
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    progressBar.style.width = '100%';
-                    displayResults(data);
-                    setTimeout(() => {
-                        progressBar.style.width = '0';
-                    }, 500); // Reset progress bar after some time
-                })
-                .catch(error => {
-                    progressBar.style.width = '0';
-                    console.error('Error fetching data:', error);
-                    document.getElementById('results').innerHTML = 'Error fetching data';
-                });
+        fetch(url)
+            .then(response => response.json())
+            .then(data => displayResults(data))
+            .catch(error => console.error('Error:', error));
+    }
+
+    function displayResults(data) {
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = '';
+
+        if (data.items) {
+            data.items.forEach(item => {
+                const resultItem = document.createElement('div');
+                resultItem.classList.add('result-item');
+                resultItem.innerHTML = `
+                    <h2><a href="${item.link}" target="_blank">${item.title}</a></h2>
+                    <p>${item.snippet}</p>
+                    <div class="result-details">
+                        <span>Link: <a href="${item.link}" target="_blank">${item.displayLink}</a></span>
+                    </div>
+                `;
+                resultsDiv.appendChild(resultItem);
+            });
+        } else {
+            resultsDiv.innerHTML = 'No results found';
         }
-
-        function displayResults(data) {
-            console.log(data); // Log data to inspect its structure and contents
-
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = '';
-
-            if (data.items) {
-                data.items.forEach(item => {
-                    const resultItem = document.createElement('div');
-                    resultItem.classList.add('result-item');
-                    resultItem.innerHTML = `
-                        <h2><a href="${item.link}" target="_blank">${item.title}</a></h2>
-                        <p>${item.snippet}</p>
-                        <div class="result-details">
-                            <span>Link: <a href="${item.link}" target="_blank">${item.displayLink}</a></span>
-                        </div>
-                    `;
-                    resultsDiv.appendChild(resultItem);
-                });
-            } else {
-                resultsDiv.innerHTML = 'No results found';
-            }
-        }
-
+    }
 // Search terms for each search bar
     const searchTermsFoerderart = [
         "Beteiligung",
