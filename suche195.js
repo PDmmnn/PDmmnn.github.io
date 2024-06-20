@@ -48,40 +48,30 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         let amountQuery = '';
         if (minAmount && maxAmount) {
             // Both min and max amounts provided
-            const formattedMin = formatAmount(minAmount);
-            const formattedMax = formatAmount(maxAmount);
-            amountQuery = `"${formattedMin}".."${formattedMax}" OR "${formattedMax}" (Euro OR Eur OR €)`;
+            amountQuery = `"${minAmount}".."${maxAmount}"`;
         } else if (minAmount) {
             // Only min amount provided
-            const formattedMin = formatAmount(minAmount);
-            amountQuery = `"${formattedMin}" (Euro OR Eur OR €)`;
+            amountQuery = `">=${minAmount}"`;
         } else if (maxAmount) {
             // Only max amount provided
-            const formattedMax = formatAmount(maxAmount);
-            amountQuery = `".."${formattedMax}" (Euro OR Eur OR €)`;
+            amountQuery = `"<=${maxAmount}"`;
         }
-        query += query ? ` AND (${amountQuery})` : `(${amountQuery})`;
+        query += query ? ` AND (${amountQuery} Euro OR Eur OR €)` : `(${amountQuery} Euro OR Eur OR €)`;
     }
     // Percentage search
     if (percentageMin || percentageMax) {
         let percentageQuery = '';
-
         if (percentageMin && percentageMax) {
             // Both min and max percentages provided
-            const formattedMin = formatPercentage(percentageMin);
-            const formattedMax = formatPercentage(percentageMax);
-            percentageQuery = `"${formattedMin}".."${formattedMax}" OR "${formattedMax}" (Prozent OR %)`;
+            percentageQuery = `"${percentageMin}".."${percentageMax}"`;
         } else if (percentageMin) {
             // Only min percentage provided
-            const formattedMin = formatPercentage(percentageMin);
-            percentageQuery = `"${formattedMin}" (Prozent OR %)`;
+            percentageQuery = `">=${percentageMin}"`;
         } else if (percentageMax) {
             // Only max percentage provided
-            const formattedMax = formatPercentage(percentageMax);
-            percentageQuery = `".."${formattedMax}" (Prozent OR %)`;
+            percentageQuery = `"<=${percentageMax}"`;
         }
-
-        query += query ? ` AND (${percentageQuery})` : `(${percentageQuery})`;
+        query += query ? ` AND (${percentageQuery} Prozent OR %)` : `(${percentageQuery} Prozent OR %)`;
     }
     if (foerderartbar) {
         const foerderartTerms = foerderartbar.split(',').map(term => `"${term.trim()}"`).join(' OR ');
