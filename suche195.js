@@ -43,35 +43,48 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     if (sonstiges) {
         query += `(${sonstiges})`;
     }
-     // Amount search
-    if (minAmount || maxAmount) {
-        let amountQuery = '';
-        if (minAmount && maxAmount) {
-            // Both min and max amounts provided
-            amountQuery = `"${minAmount}".."${maxAmount}"`;
-        } else if (minAmount) {
-            // Only min amount provided
-            amountQuery = `">=${minAmount}"`;
-        } else if (maxAmount) {
-            // Only max amount provided
-            amountQuery = `"<=${maxAmount}"`;
+      // Amount search
+    if (minAmount && maxAmount) {
+        const min = parseInt(minAmount, 10);
+        const max = parseInt(maxAmount, 10);
+        if (min <= max) {
+            let amountQuery = '';
+            for (let i = min; i <= max; i++) {
+                amountQuery += `"${i}" Euro OR "${i} Eur" OR "${i} €"`;
+                if (i < max) {
+                    amountQuery += ' OR ';
+                }
+            }
+            query += query ? ` AND (${amountQuery})` : `(${amountQuery})`;
         }
-        query += query ? ` AND (${amountQuery} Euro OR Eur OR €)` : `(${amountQuery} Euro OR Eur OR €)`;
+    } else if (minAmount) {
+        const formattedMin = formatAmount(minAmount);
+        query += query ? ` AND ("${formattedMin}" Euro OR Eur OR €)` : `("${formattedMin}" Euro OR Eur OR €)`;
+    } else if (maxAmount) {
+        const formattedMax = formatAmount(maxAmount);
+        query += query ? ` AND ("${formattedMax}" Euro OR Eur OR €)` : `("${formattedMax}" Euro OR Eur OR €)`;
     }
+
     // Percentage search
     if (percentageMin || percentageMax) {
         let percentageQuery = '';
         if (percentageMin && percentageMax) {
-            // Both min and max percentages provided
-            percentageQuery = `"${percentageMin}".."${percentageMax}"`;
+            const min = parseInt(percentageMin, 10);
+            const max = parseInt(percentageMax, 10);
+            if (min <= max) {
+                for (let i = min; i <= max; i++) {
+                    percentageQuery += `"${i}%" OR "${i} Prozent"`;
+                    if (i < max) {
+                        percentageQuery += ' OR ';
+                    }
+                }
+            }
         } else if (percentageMin) {
-            // Only min percentage provided
-            percentageQuery = `">=${percentageMin}"`;
+            percentageQuery = `"${percentageMin}%" OR "${percentageMin} Prozent"`;
         } else if (percentageMax) {
-            // Only max percentage provided
-            percentageQuery = `"<=${percentageMax}"`;
+            percentageQuery = `"${percentageMax}%" OR "${percentageMax} Prozent"`;
         }
-        query += query ? ` AND (${percentageQuery} Prozent OR %)` : `(${percentageQuery} Prozent OR %)`;
+        query += query ? ` AND (${percentageQuery})` : `(${percentageQuery})`;
     }
     if (foerderartbar) {
         const foerderartTerms = foerderartbar.split(',').map(term => `"${term.trim()}"`).join(' OR ');
