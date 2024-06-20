@@ -142,80 +142,55 @@ function formatPercentage(percentageString) {
     return percentageString.replace(/([0-9]{1,2}) ?[%Prozent]/gi, '$1');
 }
 
-async function searchAndFilterResults() {
-    const query = buildQuery();
-    const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+// Function to search with Google Custom Search API and filter results
+function search(query) {
+    const apiKey = 'YOUR_API_KEY'; // Replace with your actual API key
+    const cx = 'YOUR_CUSTOM_SEARCH_ENGINE_ID'; // Replace with your actual Custom Search Engine ID
+    const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${encodeURIComponent(query)}`;
 
-    try {
-        const response = await fetch(searchUrl);
-        const text = await response.text();
+    return fetch(url)
+        .then(response => response.json())
+        .then(data => filterResults(data))
+        .then(filteredResults => displayResults(filteredResults))
+        .catch(error => console.error('Error:', error));
+}
 
-        // Assuming you are using a method to parse and extract URLs from the search results
-        const results = extractUrlsFromSearchResults(text);
-
-        // Filter out URLs with the specific title
-        const filteredResults = await Promise.all(results.map(async (url) => {
-            const res = await fetch(url);
-            const html = await res.text();
-            if (!html.includes('<title>Förderdatenbank - Fördersuche </title>')) {
-                return url;
-            }
-            return null;
-        }));
-
-        // Remove null values
-        const finalResults = filteredResults.filter(url => url !== null);
-        return finalResults;
-
-    } catch (error) {
-        console.error('Error during search or filtering:', error);
+// Function to filter out results containing the exclusion text
+function filterResults(data) {
+    if (!data.items) {
         return [];
     }
+
+    const filteredItems = data.items.filter(item => {
+        const url = item.link;
+        return !url.includes('Sie sind auf der Suche nach finanzieller Unterstützung, dem passenden Ansprechpartner oder weiterführenden Informationen zum Thema Förderung und Finanzierung?');
+    });
+
+    return filteredItems;
 }
 
-// Helper function to extract URLs from search results
-function extractUrlsFromSearchResults(html) {
-    const urls = [];
-    const regex = /<a href="(http[^"]+)"/g;
-    let match;
-    while ((match = regex.exec(html)) !== null) {
-        urls.push(match[1]);
+// Function to display filtered results
+function displayResults(filteredResults) {
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = '';
+
+    if (filteredResults.length > 0) {
+        filteredResults.forEach(item => {
+            const resultItem = document.createElement('div');
+            resultItem.classList.add('result-item');
+            resultItem.innerHTML = `
+                <h2><a href="${item.link}" target="_blank">${item.title}</a></h2>
+                <p>${item.snippet}</p>
+                <div class="result-details">
+                    <span>Link: <a href="${item.link}" target="_blank">${item.displayLink}</a></span>
+                </div>
+            `;
+            resultsDiv.appendChild(resultItem);
+        });
+    } else {
+        resultsDiv.innerHTML = 'No results found';
     }
-    return urls;
 }
-
-    function search(query) {
-        const apiKey = 'AIzaSyAoJA3vFYtqyije1bB9u8flPdn7d2wkKNk'; // Replace with your actual API key
-        const cx = '57f6eed00529f418c'; // Replace with your actual Custom Search Engine ID
-        const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${encodeURIComponent(query)}`;
-
-        fetch(url)
-            .then(response => response.json())
-            .then(data => displayResults(data))
-            .catch(error => console.error('Error:', error));
-    }
-
-    function displayResults(data) {
-        const resultsDiv = document.getElementById('results');
-        resultsDiv.innerHTML = '';
-
-        if (data.items) {
-            data.items.forEach(item => {
-                const resultItem = document.createElement('div');
-                resultItem.classList.add('result-item');
-                resultItem.innerHTML = `
-                    <h2><a href="${item.link}" target="_blank">${item.title}</a></h2>
-                    <p>${item.snippet}</p>
-                    <div class="result-details">
-                        <span>Link: <a href="${item.link}" target="_blank">${item.displayLink}</a></span>
-                    </div>
-                `;
-                resultsDiv.appendChild(resultItem);
-            });
-        } else {
-            resultsDiv.innerHTML = 'No results found';
-        }
-    }
 // Search terms for each search bar
     const searchTermsFoerderart = [
         "Beteiligung",
