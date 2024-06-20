@@ -128,7 +128,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         query += query ? ` AND (${foerdergeberTerms})` : `(${foerdergeberTerms})`;
     }
     // Exclude specific subsite
-    const excludedSubsite = '-inurl:/SiteGlobals/FDB/Forms/Suche';
+    const excludedSubsite = '-site:foerderdatenbank.de inurl:SiteGlobals/FDB/Forms/Suche';
     query += query ? ` AND ${excludedSubsite}` : excludedSubsite;
 
     return query.trim();
