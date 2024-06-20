@@ -118,14 +118,15 @@ button:hover {
 
 @media (max-width: 767px) {
     body {
-        padding: 0;
+        margin: 0px 0px;
+        padding: 0px 0px;
         width: 100%;
     }
 
     .container {
         width: 100%;
-        margin: 15px;
-        padding-top: 15px; 
+        margin: 0px 0px;
+        padding: 0px 0px; 
     }
 }
 
