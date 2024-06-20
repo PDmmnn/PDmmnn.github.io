@@ -164,6 +164,18 @@ button:hover {
     display: block;
 }
 
+#progress-bar-container {
+    width: 100%;
+    background-color: #f9f9f9;
+    margin-top: 20px;
+}
+
+#progress-bar {
+    height: 20px;
+    background-color: #003366;
+    width: 0%;
+}
+
 
 
  /* Results Container Styles */
