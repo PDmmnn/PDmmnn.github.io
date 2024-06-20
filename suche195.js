@@ -26,6 +26,29 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         return query.trim();
     }*/
 
+    function formatAmount(amountString) {
+    const amount = parseFloat(amountString.replace(/,/g, ''));
+    if (isNaN(amount)) {
+        return amountString;
+    }
+
+    const formats = [];
+
+    // Format as plain number
+    formats.push(amount.toLocaleString('de-DE')); // German locale for number formatting (1.000.000)
+
+    // Format as millions
+    const million = amount / 1000000;
+    if (million >= 1) {
+        formats.push(`${million.toFixed(1)} Mio`);
+        formats.push(`${million.toFixed(1)} Millionen`);
+        formats.push(`${million.toFixed(1).replace('.', ',')} Mio`);
+        formats.push(`${million.toFixed(1).replace('.', ',')} Millionen`);
+    }
+
+    return formats.join(' OR ');
+}
+
     function buildQuery() {
     const sonstiges = document.getElementById('sonstiges').value.trim();
     const minAmount = document.getElementById('minAmount').value.trim();
@@ -109,14 +132,14 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
 
     return query.trim();
 }
-
+/*
 function formatAmount(amountString) {
     // Replace dots with optional regex to match with or without dots
     return amountString.replace(/\./g, '(\\.?)')
                        .replace(/([0-9,]+) Mio\.?/gi, '$1,?000,000')
                        .replace(/([0-9,]+) Millionen/gi, '$1,?000,000');
 }
-
+*/
 function formatPercentage(percentageString) {
     // Match numbers between 0 and 100 followed by % or Prozent
     return percentageString.replace(/([0-9]{1,2}) ?[%Prozent]/gi, '$1');
