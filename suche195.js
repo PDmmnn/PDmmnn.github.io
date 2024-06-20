@@ -142,67 +142,38 @@ function formatPercentage(percentageString) {
     return percentageString.replace(/([0-9]{1,2}) ?[%Prozent]/gi, '$1');
 }
 
-// Function to search with Google Custom Search API and filter results
 function search(query) {
-    const apiKey = 'AIzaSyAoJA3vFYtqyije1bB9u8flPdn7d2wkKNk'; // Replace with your actual API key
-    const cx = '57f6eed00529f418c'; // Replace with your actual Custom Search Engine ID
-    const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${encodeURIComponent(query)}`;
+        const apiKey = 'AIzaSyAoJA3vFYtqyije1bB9u8flPdn7d2wkKNk'; // Replace with your actual API key
+        const cx = '57f6eed00529f418c'; // Replace with your actual Custom Search Engine ID
+        const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${encodeURIComponent(query)}`;
 
-    // Access the progress bar
-    const progressBar = document.getElementById('progress');
-    progressBar.value = 0; // Reset progress bar
-
-    // Function to update progress
-    function updateProgress(progress) {
-        progressBar.value = progress;
+        fetch(url)
+            .then(response => response.json())
+            .then(data => displayResults(data))
+            .catch(error => console.error('Error:', error));
     }
 
-    return fetch(url)
-        .then(response => response.json())
-        .then(data => filterResults(data))
-        .then(filteredResults => {
-            displayResults(filteredResults);
-            updateProgress(100); // Set progress to 100% after displaying results
-        })
-        .catch(error => console.error('Error:', error));
-}
+    function displayResults(data) {
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = '';
 
-// Function to filter out results containing the exclusion text
-function filterResults(data) {
-    if (!data.items) {
-        return [];
+        if (data.items) {
+            data.items.forEach(item => {
+                const resultItem = document.createElement('div');
+                resultItem.classList.add('result-item');
+                resultItem.innerHTML = `
+                    <h2><a href="${item.link}" target="_blank">${item.title}</a></h2>
+                    <p>${item.snippet}</p>
+                    <div class="result-details">
+                        <span>Link: <a href="${item.link}" target="_blank">${item.displayLink}</a></span>
+                    </div>
+                `;
+                resultsDiv.appendChild(resultItem);
+            });
+        } else {
+            resultsDiv.innerHTML = 'No results found';
+        }
     }
-
-    const filteredItems = data.items.filter(item => {
-        const url = item.link;
-        return !url.includes('Sie sind auf der Suche nach finanzieller Unterstützung, dem passenden Ansprechpartner oder weiterführenden Informationen zum Thema Förderung und Finanzierung?');
-    });
-
-    return filteredItems;
-}
-
-// Function to display filtered results
-function displayResults(filteredResults) {
-    const resultsDiv = document.getElementById('results');
-    resultsDiv.innerHTML = '';
-
-    if (filteredResults.length > 0) {
-        filteredResults.forEach(item => {
-            const resultItem = document.createElement('div');
-            resultItem.classList.add('result-item');
-            resultItem.innerHTML = `
-                <h2><a href="${item.link}" target="_blank">${item.title}</a></h2>
-                <p>${item.snippet}</p>
-                <div class="result-details">
-                    <span>Link: <a href="${item.link}" target="_blank">${item.displayLink}</a></span>
-                </div>
-            `;
-            resultsDiv.appendChild(resultItem);
-        });
-    } else {
-        resultsDiv.innerHTML = 'No results found';
-    }
-}
 // Search terms for each search bar
     const searchTermsFoerderart = [
         "Beteiligung",
