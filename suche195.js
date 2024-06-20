@@ -1,8 +1,3 @@
-document.getElementById('foerderalertForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        const query = buildQuery();
-        search(query);
-    });
 
     /*function buildQuery() {
         const sonstiges = document.getElementById('sonstiges').value.trim();
@@ -142,38 +137,55 @@ function formatPercentage(percentageString) {
     return percentageString.replace(/([0-9]{1,2}) ?[%Prozent]/gi, '$1');
 }
 
+document.getElementById('foerderalertForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    // Show the progress bar
+    const progressBar = document.getElementById('progressBar');
+    progressBar.style.display = 'block';
+
+    const query = buildQuery();
+    search(query);
+});
+
 function search(query) {
         const apiKey = 'AIzaSyAoJA3vFYtqyije1bB9u8flPdn7d2wkKNk'; // Replace with your actual API key
         const cx = '57f6eed00529f418c'; // Replace with your actual Custom Search Engine ID
         const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${encodeURIComponent(query)}`;
 
-        fetch(url)
-            .then(response => response.json())
-            .then(data => displayResults(data))
-            .catch(error => console.error('Error:', error));
-    }
+    // Reset progress bar
+    const progressBarFill = document.getElementById('progressBarFill');
+    progressBarFill.style.width = '0%';
 
-    function displayResults(data) {
-        const resultsDiv = document.getElementById('results');
-        resultsDiv.innerHTML = '';
+    fetch(url)
+        .then(response => {
+            const total = response.headers.get('content-length');
+            let loaded = 0;
 
-        if (data.items) {
-            data.items.forEach(item => {
-                const resultItem = document.createElement('div');
-                resultItem.classList.add('result-item');
-                resultItem.innerHTML = `
-                    <h2><a href="${item.link}" target="_blank">${item.title}</a></h2>
-                    <p>${item.snippet}</p>
-                    <div class="result-details">
-                        <span>Link: <a href="${item.link}" target="_blank">${item.displayLink}</a></span>
-                    </div>
-                `;
-                resultsDiv.appendChild(resultItem);
+            response.body.on('data', chunk => {
+                loaded += chunk.length;
+                const progress = Math.round((loaded / total) * 100);
+                progressBarFill.style.width = progress + '%';
             });
-        } else {
-            resultsDiv.innerHTML = 'No results found';
-        }
-    }
+
+            return response.json();
+        })
+        .then(data => {
+            displayResults(data);
+
+            // Hide the progress bar after search is complete
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.display = 'none';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+
+            // Hide the progress bar in case of error
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.display = 'none';
+        });
+}
+
 // Search terms for each search bar
     const searchTermsFoerderart = [
         "Beteiligung",
