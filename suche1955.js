@@ -4,28 +4,6 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         search(query);
     });
 
-    /*function buildQuery() {
-        const sonstiges = document.getElementById('sonstiges').value.trim();
-        const searchbar = document.getElementById('searchbar').value.trim();
-        const foerderartbar = document.getElementById('foerderartbar').value.trim();
-        const foerderbereichbar = document.getElementById('foerderbereichbar').value.trim();
-        const foerderberechtigtbar = document.getElementById('foerderberechtigtbar').value.trim();
-        const foerdergebietbar = document.getElementById('foerdergebietbar').value.trim();
-        const foerdergeberbar = document.getElementById('foerdergeberbar').value.trim();
-
-        let query = '';
-
-        if (sonstiges) query += sonstiges;
-        if (searchbar) query += query ? ` AND "${searchbar}"` : `"${searchbar}"`;
-        if (foerderartbar) query += query ? ` AND "${foerderartbar}"` : `"${foerderartbar}"`;
-        if (foerderbereichbar) query += query ? ` AND "${foerderbereichbar}"` : `"${foerderbereichbar}"`;
-        if (foerderberechtigtbar) query += query ? ` AND "${foerderberechtigtbar}"` : `"${foerderberechtigtbar}"`;
-        if (foerdergebietbar) query += query ? ` AND "${foerdergebietbar}"` : `"${foerdergebietbar}"`;
-        if (foerdergeberbar) query += query ? ` AND "${foerdergeberbar}"` : `"${foerdergeberbar}"`;
-
-        return query.trim();
-    }*/
-
     function formatAmount(amountString) {
     const amount = parseFloat(amountString.replace(/,/g, ''));
     if (isNaN(amount)) {
@@ -129,14 +107,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     }
     return query.trim();
 }
-/*
-function formatAmount(amountString) {
-    // Replace dots with optional regex to match with or without dots
-    return amountString.replace(/\./g, '(\\.?)')
-                       .replace(/([0-9,]+) Mio\.?/gi, '$1,?000,000')
-                       .replace(/([0-9,]+) Millionen/gi, '$1,?000,000');
-}
-*/
+
 function formatPercentage(percentageString) {
     // Match numbers between 0 and 100 followed by % or Prozent
     return percentageString.replace(/([0-9]{1,2}) ?[%Prozent]/gi, '$1');
