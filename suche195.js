@@ -1,35 +1,8 @@
 document.getElementById('foerderalertForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-
-    // Show the progress bar
-    const progressBar = document.getElementById('progressBar');
-    progressBar.style.display = 'block';
-
-    const query = buildQuery();
-    search(query);
-});
-
-    /*function buildQuery() {
-        const sonstiges = document.getElementById('sonstiges').value.trim();
-        const searchbar = document.getElementById('searchbar').value.trim();
-        const foerderartbar = document.getElementById('foerderartbar').value.trim();
-        const foerderbereichbar = document.getElementById('foerderbereichbar').value.trim();
-        const foerderberechtigtbar = document.getElementById('foerderberechtigtbar').value.trim();
-        const foerdergebietbar = document.getElementById('foerdergebietbar').value.trim();
-        const foerdergeberbar = document.getElementById('foerdergeberbar').value.trim();
-
-        let query = '';
-
-        if (sonstiges) query += sonstiges;
-        if (searchbar) query += query ? ` AND "${searchbar}"` : `"${searchbar}"`;
-        if (foerderartbar) query += query ? ` AND "${foerderartbar}"` : `"${foerderartbar}"`;
-        if (foerderbereichbar) query += query ? ` AND "${foerderbereichbar}"` : `"${foerderbereichbar}"`;
-        if (foerderberechtigtbar) query += query ? ` AND "${foerderberechtigtbar}"` : `"${foerderberechtigtbar}"`;
-        if (foerdergebietbar) query += query ? ` AND "${foerdergebietbar}"` : `"${foerdergebietbar}"`;
-        if (foerdergeberbar) query += query ? ` AND "${foerdergeberbar}"` : `"${foerdergeberbar}"`;
-
-        return query.trim();
-    }*/
+        event.preventDefault();
+        const query = buildQuery();
+        search(query);
+    });
 
     function formatAmount(amountString) {
     const amount = parseFloat(amountString.replace(/,/g, ''));
@@ -134,14 +107,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     }
     return query.trim();
 }
-/*
-function formatAmount(amountString) {
-    // Replace dots with optional regex to match with or without dots
-    return amountString.replace(/\./g, '(\\.?)')
-                       .replace(/([0-9,]+) Mio\.?/gi, '$1,?000,000')
-                       .replace(/([0-9,]+) Millionen/gi, '$1,?000,000');
-}
-*/
+
 function formatPercentage(percentageString) {
     // Match numbers between 0 and 100 followed by % or Prozent
     return percentageString.replace(/([0-9]{1,2}) ?[%Prozent]/gi, '$1');
@@ -152,39 +118,33 @@ function search(query) {
         const cx = '57f6eed00529f418c'; // Replace with your actual Custom Search Engine ID
         const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${encodeURIComponent(query)}`;
 
-    // Reset progress bar
-    const progressBarFill = document.getElementById('progressBarFill');
-    progressBarFill.style.width = '0%';
+        fetch(url)
+            .then(response => response.json())
+            .then(data => displayResults(data))
+            .catch(error => console.error('Error:', error));
+    }
 
-    fetch(url)
-        .then(response => {
-            const total = response.headers.get('content-length');
-            let loaded = 0;
+    function displayResults(data) {
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = '';
 
-            response.body.on('data', chunk => {
-                loaded += chunk.length;
-                const progress = Math.round((loaded / total) * 100);
-                progressBarFill.style.width = progress + '%';
+        if (data.items) {
+            data.items.forEach(item => {
+                const resultItem = document.createElement('div');
+                resultItem.classList.add('result-item');
+                resultItem.innerHTML = `
+                    <h2><a href="${item.link}" target="_blank">${item.title}</a></h2>
+                    <p>${item.snippet}</p>
+                    <div class="result-details">
+                        <span>Link: <a href="${item.link}" target="_blank">${item.displayLink}</a></span>
+                    </div>
+                `;
+                resultsDiv.appendChild(resultItem);
             });
-
-            return response.json();
-        })
-        .then(data => {
-            displayResults(data);
-
-            // Hide the progress bar after search is complete
-            const progressBar = document.getElementById('progressBar');
-            progressBar.style.display = 'none';
-        })
-        .catch(error => {
-            console.error('Error:', error);
-
-            // Hide the progress bar in case of error
-            const progressBar = document.getElementById('progressBar');
-            progressBar.style.display = 'none';
-        });
-}
-
+        } else {
+            resultsDiv.innerHTML = 'No results found';
+        }
+    }
 // Search terms for each search bar
     const searchTermsFoerderart = [
         "Beteiligung",
