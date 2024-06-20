@@ -144,8 +144,8 @@ function formatPercentage(percentageString) {
 
 // Function to search with Google Custom Search API and filter results
 function search(query) {
-    const apiKey = 'YOUR_API_KEY'; // Replace with your actual API key
-    const cx = 'YOUR_CUSTOM_SEARCH_ENGINE_ID'; // Replace with your actual Custom Search Engine ID
+    const apiKey = 'AIzaSyAoJA3vFYtqyije1bB9u8flPdn7d2wkKNk'; // Replace with your actual API key
+    const cx = '57f6eed00529f418c'; // Replace with your actual Custom Search Engine ID
     const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${encodeURIComponent(query)}`;
 
     // Access the progress bar
