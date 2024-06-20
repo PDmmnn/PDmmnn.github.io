@@ -1,3 +1,13 @@
+document.getElementById('foerderalertForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    // Show the progress bar
+    const progressBar = document.getElementById('progressBar');
+    progressBar.style.display = 'block';
+
+    const query = buildQuery();
+    search(query);
+});
 
     /*function buildQuery() {
         const sonstiges = document.getElementById('sonstiges').value.trim();
@@ -136,17 +146,6 @@ function formatPercentage(percentageString) {
     // Match numbers between 0 and 100 followed by % or Prozent
     return percentageString.replace(/([0-9]{1,2}) ?[%Prozent]/gi, '$1');
 }
-
-document.getElementById('foerderalertForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-
-    // Show the progress bar
-    const progressBar = document.getElementById('progressBar');
-    progressBar.style.display = 'block';
-
-    const query = buildQuery();
-    search(query);
-});
 
 function search(query) {
         const apiKey = 'AIzaSyAoJA3vFYtqyije1bB9u8flPdn7d2wkKNk'; // Replace with your actual API key
