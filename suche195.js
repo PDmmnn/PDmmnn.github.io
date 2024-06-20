@@ -118,11 +118,26 @@ function search(query) {
         const cx = '57f6eed00529f418c'; // Replace with your actual Custom Search Engine ID
         const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${encodeURIComponent(query)}`;
 
-        fetch(url)
-            .then(response => response.json())
-            .then(data => displayResults(data))
-            .catch(error => console.error('Error:', error));
-    }
+        // Initialize progress bar
+    const progressBar = document.getElementById('progress-bar');
+    progressBar.style.width = '0%';
+
+    fetch(url)
+        .then(response => {
+            const total = response.headers.get('content-length');
+            let loaded = 0;
+
+            response.body.on('data', chunk => {
+                loaded += chunk.length;
+                const percentage = (loaded / total) * 100;
+                progressBar.style.width = percentage + '%';
+            });
+
+            return response.json();
+        })
+        .then(data => displayResults(data))
+        .catch(error => console.error('Error:', error));
+}
 
     function displayResults(data) {
         const resultsDiv = document.getElementById('results');
