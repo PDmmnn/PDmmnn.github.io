@@ -72,20 +72,18 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         const max = parseInt(maxAmount, 10);
         if (min <= max) {
             let amountQuery = '';
-            for (let i = min; i <= max; i++) {
-                amountQuery += `"${i}" Euro OR "${i} Eur" OR "${i} €"`;
-                if (i < max) {
+            for (let i = min; i <= max; i += 100) {
+                amountQuery += `${formatAmount(i.toString())}`;
+                if (i + 100 <= max) {
                     amountQuery += ' OR ';
                 }
             }
             query += query ? ` AND (${amountQuery})` : `(${amountQuery})`;
         }
     } else if (minAmount) {
-        const formattedMin = formatAmount(minAmount);
-        query += query ? ` AND ("${formattedMin}" Euro OR Eur OR €)` : `("${formattedMin}" Euro OR Eur OR €)`;
+        query += query ? ` AND (${formatAmount(minAmount)})` : `(${formatAmount(minAmount)})`;
     } else if (maxAmount) {
-        const formattedMax = formatAmount(maxAmount);
-        query += query ? ` AND ("${formattedMax}" Euro OR Eur OR €)` : `("${formattedMax}" Euro OR Eur OR €)`;
+        query += query ? ` AND (${formatAmount(maxAmount)})` : `(${formatAmount(maxAmount)})`;
     }
 
     // Percentage search
