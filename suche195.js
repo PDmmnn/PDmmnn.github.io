@@ -127,13 +127,25 @@ function search(query) {
             const total = response.headers.get('content-length');
             let loaded = 0;
 
-            response.body.on('data', chunk => {
-                loaded += chunk.length;
-                const percentage = (loaded / total) * 100;
-                progressBar.style.width = percentage + '%';
-            });
+            const reader = response.body.getReader();
 
-            return response.json();
+            function pump() {
+                return reader.read().then(({ value, done }) => {
+                    if (done) {
+                        progressBar.style.width = '100%';
+                        return;
+                    }
+
+                    loaded += value.length;
+                    const percentage = (loaded / total) * 100;
+                    progressBar.style.width = percentage + '%';
+
+                    // Continue reading
+                    return pump();
+                });
+            }
+
+            return pump().then(() => response.json());
         })
         .then(data => displayResults(data))
         .catch(error => console.error('Error:', error));
