@@ -104,13 +104,13 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     }
 
     if (foerderberechtigtbar) {
-        const foerderberechtigtTerms = foerderberechtigtbar.split(',')
-            .map(term => term.trim())
-            .filter(term => term !== '')  // Filter out empty terms
-            .map(term => `"${term}" NEAR "Förderberechtigt:" OR "${term}*berechtigt"`)
-            .join(' OR ');
-        query += query ? ` AND (${foerderberechtigtTerms})` : `(${foerderberechtigtTerms})`;
-    }
+    const foerderberechtigtTerms = foerderberechtigtbar.split(',')
+        .map(term => term.trim())
+        .filter(term => term !== '')  // Filter out empty terms
+        .map(term => `site:foerderdatenbank.de "<dd>${term}</dd>"`)
+        .join(' OR ');
+    query += query ? ` AND (${foerderberechtigtTerms})` : `(${foerderberechtigtTerms})`;
+}
 
     if (foerdergebietbar) {
         const foerdergebietTerms = foerdergebietbar.split(',')
