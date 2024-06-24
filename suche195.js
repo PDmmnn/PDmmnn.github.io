@@ -104,21 +104,21 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     }
 
     if (foerderberechtigtbar) {
-        const foerderberechtigtTerms = foerderberechtigtbar.split(',')
-            .map(term => term.trim())
-            .filter(term => term !== '')  // Filter out empty terms
-            .map(term => `"${term}" NEAR "Förderberechtigt:" OR "${term}*berechtigt"`)
-            .join(' OR ');
-        query += query ? ` AND (${foerderberechtigtTerms})` : `(${foerderberechtigtTerms})`;
+    const foerderberechtigtTerms = foerderberechtigtbar.split(',')
+        .map(term => term.trim())
+        .filter(term => term !== '')  // Filter out empty terms
+        .map(term => `site:foerderdatenbank.de "<dd>${term}</dd>"`)
+        .join(' OR ');
+    query += query ? ` AND (${foerderberechtigtTerms})` : `(${foerderberechtigtTerms})`;
     }
 
     if (foerdergebietbar) {
-        const foerdergebietTerms = foerdergebietbar.split(',')
-            .map(term => term.trim())
-            .filter(term => term !== '')  // Filter out empty terms
-            .map(term => `"${term}" NEAR "Fördergebiet:" OR "${term}*gebiet"`)
-            .join(' OR ');
-        query += query ? ` AND (${foerdergebietTerms})` : `(${foerdergebietTerms})`;
+    const foerdergebietTerms = foerdergebietbar.split(',')
+        .map(term => term.trim())
+        .filter(term => term !== '')  // Filter out empty terms
+        .map(term => `site:foerderdatenbank.de "<dd>${term}</dd>"`)
+        .join(' OR ');
+    query += query ? ` AND (${foerdergebietTerms})` : `(${foerdergebietTerms})`;
     }
 
     if (foerdergeberbar) {
@@ -150,25 +150,57 @@ function search(query) {
     }
 
 function processResults(data, query) {
-            if (data.items) {
+    if (data.items) {
+        data.items.forEach(item => {
+            const title = item.title.toLowerCase();
+            const snippet = item.snippet.toLowerCase();
+            let termFrequency = 0;
+
+            // Handle foerdergeberbar specifically
+            if (query.includes('foerdergeberbar')) {
                 const searchTerms = query.split(' AND ').flatMap(term => term.replace(/"/g, '').split(' OR ').map(t => t.trim().toLowerCase()));
-                data.items.forEach(item => {
-                    const title = item.title.toLowerCase();
-                    const snippet = item.snippet.toLowerCase();
-                    item.termFrequency = searchTerms.reduce((acc, term) => {
-                        return acc + (title.match(new RegExp(term, 'g')) || []).length + (snippet.match(new RegExp(term, 'g')) || []).length;
-                    }, 0);
-                });
+                
+                // Construct regex pattern for foerdergeberbar within <dd> tags
+                const regexPattern = searchTerms.map(term => {
+                    return `(?<=<dd[^>]*>)([^<]*${term}[^<]*)(?=<\/dd>)`;
+                }).join('|');
 
-                // Sort results by term frequency
-                data.items.sort((a, b) => b.termFrequency - a.termFrequency);
+                const regex = new RegExp(regexPattern, 'gi');
 
-                displayResults(data);
-            } else {
-                displayResults({items: []});
+                // Count occurrences of matched terms within <dd> elements
+                const ddMatches = title.match(regex) || [];
+                const snippetMatches = snippet.match(regex) || [];
+                termFrequency += ddMatches.length + snippetMatches.length;
             }
-        }
 
+            // Handle foerderberechtigtbar specifically
+            if (query.includes('foerderberechtigtbar')) {
+                const searchTerms = query.split(' AND ').flatMap(term => term.replace(/"/g, '').split(' OR ').map(t => t.trim().toLowerCase()));
+                
+                // Construct regex pattern for foerderberechtigtbar within <dd> tags
+                const regexPattern = searchTerms.map(term => {
+                    return `(?<=<dd[^>]*>)([^<]*${term}[^<]*)(?=<\/dd>)`;
+                }).join('|');
+
+                const regex = new RegExp(regexPattern, 'gi');
+
+                // Count occurrences of matched terms within <dd> elements
+                const ddMatches = title.match(regex) || [];
+                const snippetMatches = snippet.match(regex) || [];
+                termFrequency += ddMatches.length + snippetMatches.length;
+            }
+
+            item.termFrequency = termFrequency;
+        });
+
+        // Sort results by term frequency
+        data.items.sort((a, b) => b.termFrequency - a.termFrequency);
+
+        displayResults(data);
+    } else {
+        displayResults({items: []});
+    }
+}
 
     function displayResults(data) {
         const resultsDiv = document.getElementById('results');
