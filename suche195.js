@@ -156,39 +156,54 @@ function processResults(data, query) {
             const title = item.title.toLowerCase();
             const snippet = item.snippet.toLowerCase();
 
-            // Fetch content from the page to find the search terms within <dd> tags
+            // Check if the link starts with www.foerderdatenbank.de
             if (item.displayLink.startsWith('www.foerderdatenbank.de')) {
-                fetch(item.link)
-                    .then(response => response.text())
-                    .then(html => {
-                        const parser = new DOMParser();
-                        const doc = parser.parseFromString(html, 'text/html');
-                        const ddElements = doc.querySelectorAll('dd');
-                        let contentToCheck = '';
-                        ddElements.forEach(dd => {
-                            contentToCheck += dd.textContent.toLowerCase();
-                        });
+                // Check if the query includes foerderberechtigtbar or foerdergeberbar
+                if (query.includes('foerderberechtigtbar') || query.includes('foerdergeberbar')) {
+                    fetch(item.link)
+                        .then(response => response.text())
+                        .then(html => {
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(html, 'text/html');
+                            const ddElements = doc.querySelectorAll('dd');
+                            let contentToCheck = '';
+                            ddElements.forEach(dd => {
+                                contentToCheck += dd.textContent.toLowerCase();
+                            });
 
-                        // Count occurrences of search terms within <dd> elements
-                        item.termFrequency = searchTerms.reduce((acc, term) => {
-                            return acc + (contentToCheck.match(new RegExp(term, 'g')) || []).length;
-                        }, 0);
+                            // Count occurrences of search terms within <dd> elements
+                            item.termFrequency = searchTerms.reduce((acc, term) => {
+                                return acc + (contentToCheck.match(new RegExp(term, 'g')) || []).length;
+                            }, 0);
 
-                        // Update results display
-                        displayResults(data);
-                    })
-                    .catch(error => console.error('Error fetching page content:', error));
+                            // Update results display
+                            displayResults(data);
+                        })
+                        .catch(error => console.error('Error fetching page content:', error));
+                } else {
+                    // Standard term frequency calculation for other terms
+                    item.termFrequency = searchTerms.reduce((acc, term) => {
+                        return acc + (title.match(new RegExp(term, 'g')) || []).length + (snippet.match(new RegExp(term, 'g')) || []).length;
+                    }, 0);
+
+                    // Update results display
+                    displayResults(data);
+                }
             } else {
-                // For non-www.foerderdatenbank.de links, use standard title and snippet check
+                // Standard term frequency calculation for other links
                 item.termFrequency = searchTerms.reduce((acc, term) => {
                     return acc + (title.match(new RegExp(term, 'g')) || []).length + (snippet.match(new RegExp(term, 'g')) || []).length;
                 }, 0);
+
+                // Update results display
+                displayResults(data);
             }
         });
 
         // Sort results by term frequency
         data.items.sort((a, b) => b.termFrequency - a.termFrequency);
 
+        // Display sorted results
         displayResults(data);
     } else {
         displayResults({items: []});
