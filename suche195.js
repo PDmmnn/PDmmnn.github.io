@@ -118,7 +118,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
             .filter(term => term !== '')  // Filter out empty terms
             .map(term => {
                 const trimmedTerm = term.trim();
-                return `("${trimmedTerm}" NEAR "Gebiet" OR "${trimmedTerm}*gebiet*")`;
+                return `("${trimmedTerm}" NEAR "Fördergebiet:" OR "${trimmedTerm}*gebiet")`;
             }).join(' OR ');
         query += query ? ` AND (${foerdergebietTerms})` : `(${foerdergebietTerms})`;
     }
