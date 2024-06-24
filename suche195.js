@@ -129,12 +129,13 @@ function search(query) {
 
 function processResults(data, query) {
             if (data.items) {
-                const searchTerm = query.split(' AND ').map(term => term.replace(/"/g, '').trim()).join(' ').toLowerCase();
+                const searchTerms = query.split(' AND ').flatMap(term => term.replace(/"/g, '').split(' OR ').map(t => t.trim().toLowerCase()));
                 data.items.forEach(item => {
                     const title = item.title.toLowerCase();
                     const snippet = item.snippet.toLowerCase();
-                    item.termFrequency = (title.match(new RegExp(searchTerm, 'g')) || []).length +
-                                         (snippet.match(new RegExp(searchTerm, 'g')) || []).length;
+                    item.termFrequency = searchTerms.reduce((acc, term) => {
+                        return acc + (title.match(new RegExp(term, 'g')) || []).length + (snippet.match(new RegExp(term, 'g')) || []).length;
+                    }, 0);
                 });
 
                 // Sort results by term frequency
