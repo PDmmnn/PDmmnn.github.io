@@ -28,6 +28,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
 }
 
     function buildQuery() {
+    const url = window.location.href;
     const sonstiges = document.getElementById('sonstiges').value.trim();
     const minAmount = document.getElementById('minAmount').value.trim();
     const maxAmount = document.getElementById('maxAmount').value.trim();
@@ -40,6 +41,32 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     const foerdergeberbar = document.getElementById('foerdergeberbar').value.trim();
 
     let query = '';
+
+    // Check if URL starts with www.foerderdatenbank.de
+    if (url.startsWith('http://www.foerderdatenbank.de') || url.startsWith('https://www.foerderdatenbank.de')) {
+
+        // Function to extract text content between <dd> and </dd> elements
+        function extractTextBetweenDD(id) {
+            const ddElement = document.querySelector(`dd[id="${id}"]`);
+            if (ddElement) {
+                const textContent = ddElement.textContent.trim();
+                return textContent ? `"${textContent}"` : '';
+            }
+            return '';
+        }
+
+        // Search for foerderberechtigtbar
+        const foerderberechtigtQuery = extractTextBetweenDD('foerderberechtigtbar');
+        if (foerderberechtigtQuery) {
+            query += foerderberechtigtQuery;
+        }
+
+        // Search for foerdergeberbar
+        const foerdergeberQuery = extractTextBetweenDD('foerdergeberbar');
+        if (foerdergeberQuery) {
+            query += query ? ` AND ${foerdergeberQuery}` : foerdergeberQuery;
+        }
+    }
 
     if (sonstiges) {
         query += `(${sonstiges})`;
