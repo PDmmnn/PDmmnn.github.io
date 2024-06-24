@@ -107,7 +107,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         const foerderberechtigtTerms = foerderberechtigtbar.split(',')
             .map(term => term.trim())
             .filter(term => term !== '')  // Filter out empty terms
-            .map(term => `"${term}" NEAR "Förderberechtigt:" OR "${term}*berechtigt"`)
+            .map(term => `"${term}" NEAR "Förderberechtigte:" OR "${term}*berechtigt"`)
             .join(' OR ');
         query += query ? ` AND (${foerderberechtigtTerms})` : `(${foerderberechtigtTerms})`;
     }
