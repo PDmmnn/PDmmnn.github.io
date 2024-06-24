@@ -150,47 +150,24 @@ function search(query) {
     }
 
 function processResults(data, query) {
-    if (data.items) {
-        const searchTerms = query.split(' AND ').flatMap(term => term.replace(/"/g, '').split(' OR ').map(t => t.trim().toLowerCase()));
-        data.items.forEach(item => {
-            const title = item.title.toLowerCase();
-            const snippet = item.snippet.toLowerCase();
-            item.termFrequency = searchTerms.reduce((acc, term) => {
-                return acc + (title.match(new RegExp(term, 'g')) || []).length + (snippet.match(new RegExp(term, 'g')) || []).length;
-            }, 0);
+            if (data.items) {
+                const searchTerms = query.split(' AND ').flatMap(term => term.replace(/"/g, '').split(' OR ').map(t => t.trim().toLowerCase()));
+                data.items.forEach(item => {
+                    const title = item.title.toLowerCase();
+                    const snippet = item.snippet.toLowerCase();
+                    item.termFrequency = searchTerms.reduce((acc, term) => {
+                        return acc + (title.match(new RegExp(term, 'g')) || []).length + (snippet.match(new RegExp(term, 'g')) || []).length;
+                    }, 0);
+                });
 
-            // Custom logic to prioritize proximity for foerdergebietbar and foerderberechtigtbar
-            if (foerderberechtigtbar) {
-                const foerderberechtigtTerms = foerderberechtigtbar.split(',')
-                    .map(term => term.trim().toLowerCase());
-                const proximityToFoerderberechtigt = foerderberechtigtTerms.some(term =>
-                    title.includes(`förderberechtigt: ${term}`) || snippet.includes(`förderberechtigt: ${term}`)
-                );
-                if (proximityToFoerderberechtigt) {
-                    item.termFrequency += 100; // Increase term frequency score as proximity bonus
-                }
+                // Sort results by term frequency
+                data.items.sort((a, b) => b.termFrequency - a.termFrequency);
+
+                displayResults(data);
+            } else {
+                displayResults({items: []});
             }
-
-            if (foerdergebietbar) {
-                const foerdergebietTerms = foerdergebietbar.split(',')
-                    .map(term => term.trim().toLowerCase());
-                const proximityToFoerdergebiet = foerdergebietTerms.some(term =>
-                    title.includes(`fördergebiet: ${term}`) || snippet.includes(`fördergebiet: ${term}`)
-                );
-                if (proximityToFoerdergebiet) {
-                    item.termFrequency += 100; // Increase term frequency score as proximity bonus
-                }
-            }
-        });
-
-        // Sort results by term frequency
-        data.items.sort((a, b) => b.termFrequency - a.termFrequency);
-
-        displayResults(data);
-    } else {
-        displayResults({ items: [] });
-    }
-}
+        }
 
 
     function displayResults(data) {
