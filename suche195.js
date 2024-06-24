@@ -97,8 +97,11 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         const foerderberechtigtTerms = foerderberechtigtbar.split(',').map(term => `"${term.trim()}"`).join(' OR ');
         query += query ? ` AND (${foerderberechtigtTerms})` : `(${foerderberechtigtTerms})`;
     }
-    if (foerdergebietbar) {
-        const foerdergebietTerms = foerdergebietbar.split(',').map(term => `"${term.trim()}"`).join(' OR ');
+     if (foerdergebietbar) {
+        const foerdergebietTerms = foerdergebietbar.split(',').map(term => {
+            const trimmedTerm = term.trim();
+            return `("${trimmedTerm}" NEAR "Gebiet" OR "${trimmedTerm}gebiet*")`;
+        }).join(' OR ');
         query += query ? ` AND (${foerdergebietTerms})` : `(${foerdergebietTerms})`;
     }
     if (foerdergeberbar) {
