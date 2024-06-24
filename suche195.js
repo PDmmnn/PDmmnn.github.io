@@ -107,7 +107,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         const foerderberechtigtTerms = foerderberechtigtbar.split(',')
             .map(term => term.trim())
             .filter(term => term !== '')  // Filter out empty terms
-            .map(term => `"${term}" NEAR "Förderberechtigt:" OR "${term}*berechtigt"`)
+            .map(term => `"${term}" NEAR "Förderberechtigte:" OR "${term}*berechtigt*"`)
             .join(' OR ');
         query += query ? ` AND (${foerderberechtigtTerms})` : `(${foerderberechtigtTerms})`;
     }
@@ -150,65 +150,25 @@ function search(query) {
     }
 
 function processResults(data, query) {
-    if (data.items) {
-        const searchTerms = query.split(' AND ').flatMap(term => term.replace(/"/g, '').split(' OR ').map(t => t.trim().toLowerCase()));
-        data.items.forEach(item => {
-            const title = item.title.toLowerCase();
-            const snippet = item.snippet.toLowerCase();
-
-            // Check if the link starts with www.foerderdatenbank.de
-            if (item.displayLink.startsWith('www.foerderdatenbank.de')) {
-                // Check if the query includes foerderberechtigtbar or foerdergeberbar
-                if (query.includes('foerderberechtigtbar') || query.includes('foerdergeberbar')) {
-                    fetch(item.link)
-                        .then(response => response.text())
-                        .then(html => {
-                            const parser = new DOMParser();
-                            const doc = parser.parseFromString(html, 'text/html');
-                            const ddElements = doc.querySelectorAll('dd');
-                            let contentToCheck = '';
-                            ddElements.forEach(dd => {
-                                contentToCheck += dd.textContent.toLowerCase();
-                            });
-
-                            // Count occurrences of search terms within <dd> elements
-                            item.termFrequency = searchTerms.reduce((acc, term) => {
-                                return acc + (contentToCheck.match(new RegExp(term, 'g')) || []).length;
-                            }, 0);
-
-                            // Update results display
-                            displayResults(data);
-                        })
-                        .catch(error => console.error('Error fetching page content:', error));
-                } else {
-                    // Standard term frequency calculation for other terms
+            if (data.items) {
+                const searchTerms = query.split(' AND ').flatMap(term => term.replace(/"/g, '').split(' OR ').map(t => t.trim().toLowerCase()));
+                data.items.forEach(item => {
+                    const title = item.title.toLowerCase();
+                    const snippet = item.snippet.toLowerCase();
                     item.termFrequency = searchTerms.reduce((acc, term) => {
                         return acc + (title.match(new RegExp(term, 'g')) || []).length + (snippet.match(new RegExp(term, 'g')) || []).length;
                     }, 0);
+                });
 
-                    // Update results display
-                    displayResults(data);
-                }
-            } else {
-                // Standard term frequency calculation for other links
-                item.termFrequency = searchTerms.reduce((acc, term) => {
-                    return acc + (title.match(new RegExp(term, 'g')) || []).length + (snippet.match(new RegExp(term, 'g')) || []).length;
-                }, 0);
+                // Sort results by term frequency
+                data.items.sort((a, b) => b.termFrequency - a.termFrequency);
 
-                // Update results display
                 displayResults(data);
+            } else {
+                displayResults({items: []});
             }
-        });
+        }
 
-        // Sort results by term frequency
-        data.items.sort((a, b) => b.termFrequency - a.termFrequency);
-
-        // Display sorted results
-        displayResults(data);
-    } else {
-        displayResults({items: []});
-    }
-}
 
     function displayResults(data) {
         const resultsDiv = document.getElementById('results');
