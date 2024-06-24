@@ -104,20 +104,38 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     }
 
     if (foerderberechtigtbar) {
-        const foerderberechtigtTerms = foerderberechtigtbar.split(',')
-            .map(term => term.trim())
-            .filter(term => term !== '')  // Filter out empty terms
-            .map(term => `"${term}" NEAR "Förderberechtigte:" OR "${term}*berechtigt*"`)
-            .join(' OR ');
+        let foerderberechtigtTerms;
+        if (window.location.href.startsWith('https://www.foerderdatenbank.de')) {
+            foerderberechtigtTerms = foerderberechtigtbar.split(',')
+                .map(term => term.trim())
+                .filter(term => term !== '')
+                .map(term => `"Förderberechtigte: ${term}" OR "${term}*berechtigt*"`)
+                .join(' OR ');
+        } else {
+            foerderberechtigtTerms = foerderberechtigtbar.split(',')
+                .map(term => term.trim())
+                .filter(term => term !== '')
+                .map(term => `"${term}"`)
+                .join(' OR ');
+        }
         query += query ? ` AND (${foerderberechtigtTerms})` : `(${foerderberechtigtTerms})`;
     }
 
     if (foerdergebietbar) {
-        const foerdergebietTerms = foerdergebietbar.split(',')
-            .map(term => term.trim())
-            .filter(term => term !== '')  // Filter out empty terms
-            .map(term => `"${term}" NEAR "Fördergebiet:" OR "${term}*gebiet"`)
-            .join(' OR ');
+        let foerdergebietTerms;
+        if (window.location.href.startsWith('https://www.foerderdatenbank.de')) {
+            foerdergebietTerms = foerdergebietbar.split(',')
+                .map(term => term.trim())
+                .filter(term => term !== '')
+                .map(term => `"Fördergebiet: ${term}" OR "*gebiet* *${term}"`)
+                .join(' OR ');
+        } else {
+            foerdergebietTerms = foerdergebietbar.split(',')
+                .map(term => term.trim())
+                .filter(term => term !== '')
+                .map(term => `"${term}"`)
+                .join(' OR ');
+        }
         query += query ? ` AND (${foerdergebietTerms})` : `(${foerdergebietTerms})`;
     }
 
