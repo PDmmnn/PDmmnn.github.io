@@ -127,6 +127,25 @@ function search(query) {
             .catch(error => console.error('Error:', error));
     }
 
+function processResults(data, query) {
+            if (data.items) {
+                const searchTerm = query.split(' AND ').map(term => term.replace(/"/g, '').trim()).join(' ').toLowerCase();
+                data.items.forEach(item => {
+                    const title = item.title.toLowerCase();
+                    const snippet = item.snippet.toLowerCase();
+                    item.termFrequency = (title.match(new RegExp(searchTerm, 'g')) || []).length +
+                                         (snippet.match(new RegExp(searchTerm, 'g')) || []).length;
+                });
+
+                // Sort results by term frequency
+                data.items.sort((a, b) => b.termFrequency - a.termFrequency);
+
+                displayResults(data);
+            } else {
+                displayResults({items: []});
+            }
+        }
+
     function displayResults(data) {
         const resultsDiv = document.getElementById('results');
         resultsDiv.innerHTML = '';
