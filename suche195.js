@@ -50,9 +50,9 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         const max = parseInt(maxAmount, 10);
         if (min <= max) {
             let amountQuery = '';
-            for (let i = min; i <= max; i += 10000) {
+            for (let i = min; i <= max; i += 5000) {
                 amountQuery += `${formatAmount(i.toString())}`;
-                if (i + 10000 <= max) {
+                if (i + 5000 <= max) {
                     amountQuery += ' OR ';
                 }
             }
@@ -116,7 +116,6 @@ function formatPercentage(percentageString) {
 function search(query) {
         const apiKey = 'AIzaSyAoJA3vFYtqyije1bB9u8flPdn7d2wkKNk'; // Replace with your actual API key
         const cx = '57f6eed00529f418c'; // Replace with your actual Custom Search Engine ID
-        const excludePath = 'foerderdatenbank.de/SiteGlobals/FDB/Forms/Suche/Expertensuche_Formular.html';
         const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${encodeURIComponent(query)}`;
 
         fetch(url)
