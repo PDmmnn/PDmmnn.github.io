@@ -109,7 +109,8 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
             foerderberechtigtTerms = foerderberechtigtbar.split(',')
                 .map(term => term.trim())
                 .filter(term => term !== '')
-                .map(term => `"Förderberechtigte: ${term}" OR "${term}*berechtigt*"`)
+                //.map(term => `"Förderberechtigte: ${term}" OR "${term}*berechtigt*"`)
+                .map(term => `"Förderberechtigte\\s*:\\s*${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}" OR "*berechtigt* ${term}"`)
                 .join(' OR ');
         } else {
             foerderberechtigtTerms = foerderberechtigtbar.split(',')
@@ -127,7 +128,8 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
             foerdergebietTerms = foerdergebietbar.split(',')
                 .map(term => term.trim())
                 .filter(term => term !== '')
-                .map(term => `"Fördergebiet: ${term}" OR "*gebiet* *${term}"`)
+                //.map(term => `"Fördergebiet: ${term}" OR "*gebiet* *${term}"`)
+                .map(term => `"Fördergebiet\\s*:\\s*${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}" OR "*ebiet* ${term}"`)
                 .join(' OR ');
         } else {
             foerdergebietTerms = foerdergebietbar.split(',')
