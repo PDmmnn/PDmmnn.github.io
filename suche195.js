@@ -128,7 +128,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
             foerdergebietTerms = foerdergebietbar.split(',')
                 .map(term => term.trim())
                 .filter(term => term !== '')
-                //.map(term => `"Fördergebiet: ${term}" OR "*gebiet* *${term}"`)
+                //.map(term => `"Fördergebiet: ${term}" OR "*ebiet* ${term}"`)
                 .map(term => `"Fördergebiet\\s*:\\s*${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}" OR "*ebiet* ${term}"`)
                 .join(' OR ');
         } else {
