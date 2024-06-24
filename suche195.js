@@ -100,7 +100,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
      if (foerdergebietbar) {
         const foerdergebietTerms = foerdergebietbar.split(',').map(term => {
             const trimmedTerm = term.trim();
-            return `("${trimmedTerm}" NEAR "Gebiet" OR "${trimmedTerm}gebiet*")`;
+            return `("${trimmedTerm}" NEAR "Gebiet" OR "${trimmedTerm}*gebiet*")`;
         }).join(' OR ');
         query += query ? ` AND (${foerdergebietTerms})` : `(${foerdergebietTerms})`;
     }
