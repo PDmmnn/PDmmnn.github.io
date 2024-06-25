@@ -31,7 +31,10 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     const germanStates = [
         "Baden-Württemberg", "Bayern", "Berlin", "Brandenburg", "Bremen",
         "Hamburg", "Hessen", "Mecklenburg-Vorpommern", "Niedersachsen", "Nordrhein-Westfalen",
-        "Rheinland-Pfalz", "Saarland", "Sachsen", "Sachsen-Anhalt", "Schleswig-Holstein", "Thüringen"
+        "Rheinland-Pfalz", "Saarland", "Sachsen", "Sachsen-Anhalt", "Schleswig-Holstein", "Thüringen",
+            "Baden-Württemberg,", "Bayern,", "Berlin,", "Brandenburg,", "Bremen,",
+        "Hamburg,", "Hessen,", "Mecklenburg-Vorpommern,", "Niedersachsen,", "Nordrhein-Westfalen,",
+        "Rheinland-Pfalz,", "Saarland,", "Sachsen,", "Sachsen-Anhalt,", "Schleswig-Holstein,", "Thüringen,"
     ];
     const sonstiges = document.getElementById('sonstiges').value.trim();
     const minAmount = document.getElementById('minAmount').value.trim();
