@@ -28,6 +28,11 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
 }
 
     function buildQuery() {
+    const germanStates = [
+        "Baden-Württemberg", "Bayern", "Berlin", "Brandenburg", "Bremen",
+        "Hamburg", "Hessen", "Mecklenburg-Vorpommern", "Niedersachsen", "Nordrhein-Westfalen",
+        "Rheinland-Pfalz", "Saarland", "Sachsen", "Sachsen-Anhalt", "Schleswig-Holstein", "Thüringen"
+    ];
     const sonstiges = document.getElementById('sonstiges').value.trim();
     const minAmount = document.getElementById('minAmount').value.trim();
     const maxAmount = document.getElementById('maxAmount').value.trim();
@@ -131,12 +136,24 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
                 //.map(term => `"Fördergebiet: ${term}" OR "*ebiet* ${term}"`)
                 .map(term => `"Fördergebiet\\s*:\\s*${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}" OR "*ebiet* ${term}"`)
                 .join(' OR ');
+                const isGermanState = germanStates.some(state => foerdergebietTerms.includes(state));
+        if (isGermanState) {
+            query += query ? ` AND (${foerdergebietTerms} OR "bundesweit")` : `(${foerdergebietTerms} OR "bundesweit")`;
+        } else {
+            query += query ? ` AND (${foerdergebietTerms})` : `(${foerdergebietTerms})`;
+        }
         } else {
             foerdergebietTerms = foerdergebietbar.split(',')
                 .map(term => term.trim())
                 .filter(term => term !== '')
                 .map(term => `"${term}"`)
                 .join(' OR ');
+                const isGermanState = germanStates.some(state => foerdergebietTerms.includes(state));
+        if (isGermanState) {
+            query += query ? ` AND (${foerdergebietTerms} OR "bundesweit")` : `(${foerdergebietTerms} OR "bundesweit")`;
+        } else {
+            query += query ? ` AND (${foerdergebietTerms})` : `(${foerdergebietTerms})`;
+        }
         }
         query += query ? ` AND (${foerdergebietTerms})` : `(${foerdergebietTerms})`;
     }
@@ -265,7 +282,7 @@ function processResults(data, query) {
 
     const searchTermsFoerdergebiet = [
         "Bremen",
-        "Deutschland, bundesweit",
+        "bundesweit",
         "EU",
         "Niedersachsen"
     ];
