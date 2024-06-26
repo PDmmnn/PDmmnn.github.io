@@ -11,7 +11,56 @@
         <div class="container">
             <h1>FörderAlert</h1>
             <form id="foerderalertForm">
-                <!-- Input fields as per the original code -->
+                <label for="name">Name Suchauftrag</label>
+                <input type="text" id="name" name="name" placeholder="...">
+
+                <label for="email">E-Mail</label>
+                <input type="email" id="email" name="email" placeholder="...">
+
+                <!-- Search Bar for Förderhöhe -->
+                <label for="searchbar">Förderhöhe in Euro</label>
+                <div class="search-range">
+                    <input type="number" id="minAmount" name="minAmount" placeholder="Min">
+                    <span> - </span>
+                    <input type="number" id="maxAmount" name="maxAmount" placeholder="Max">
+                </div>
+
+                <!-- Search Bar for Förderanteil -->
+                <label for="foerderanteil">Förderanteil in Prozent</label>
+                <div class="search-range">
+                <input type="number" id="percentageMin" name="percentageMin" placeholder="Min">
+                <span> - </span>
+                <input type="number" id="percentageMax" name="percentageMax" placeholder="Max">
+                </div>
+                
+                <!-- Search Bar for Förderart -->
+                <label for="foerderartbar">Förderart</label>
+                <input type="text" id="foerderartbar" name="foerderartbar" placeholder="...">
+                <div id="dropdown-foerderart" class="dropdown-content"></div>
+
+                <!-- Search Bar for Förderbereich -->
+                <label for="foerderbereichbar">Förderbereich</label>
+                <input type="text" id="foerderbereichbar" name="foerderbereichbar" placeholder="...">
+                <div id="dropdown-foerderbereich" class="dropdown-content"></div>
+
+                <!-- Search Bar for Förderberechtigt -->
+                <label for="foerderberechtigtbar">Förderberechtigt</label>
+                <input type="text" id="foerderberechtigtbar" name="foerderberechtigtbar" placeholder="...">
+                <div id="dropdown-foerderberechtigt" class="dropdown-content"></div>
+                
+                <!-- Search Bar for Fördergebiet -->
+                <label for="foerdergebietbar">Fördergebiet</label>
+                <input type="text" id="foerdergebietbar" name="foerdergebietbar" placeholder="...">
+                <div id="dropdown-foerdergebiet" class="dropdown-content"></div>
+                
+                <!-- Search Bar for Fördergeber -->
+                <label for="foerdergeberbar">Fördergeber</label>
+                <input type="text" id="foerdergeberbar" name="foerdergeberbar" placeholder="...">
+                <div id="dropdown-foerdergeber" class="dropdown-content"></div>
+
+                <label for="sonstiges">Spezifische Suchbegriffe</label>
+                <input type="text" id="sonstiges" name="sonstiges" placeholder="...">
+                
                 <div class="button-group">
                     <button type="submit">Suche</button>
                     <button type="button" onclick="createSearchRequest()">Suchauftrag erstellen</button>
@@ -25,54 +74,7 @@
     </div>
 
     <script>
-        document.getElementById('foerderalertForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const query = buildQuery();
-            search(query);
-        });
-
-        function buildQuery() {
-            // Build query logic as per the original code
-            return "example query";
-        }
-
-        function search(query) {
-            fetch(`/search?query=${encodeURIComponent(query)}`)
-                .then(response => response.json())
-                .then(data => displayResults(data))
-                .catch(error => console.error('Error:', error));
-        }
-
-        function displayResults(data) {
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = '';
-            data.forEach(item => {
-                const resultItem = document.createElement('div');
-                resultItem.classList.add('result-item');
-                resultItem.innerHTML = `
-                    <h2><a href="${item.link}" target="_blank">${item.title}</a></h2>
-                    <p>${item.snippet}</p>
-                `;
-                resultsDiv.appendChild(resultItem);
-            });
-        }
-
-        function createSearchRequest() {
-            const formData = {
-                query: buildQuery(),
-                email: document.getElementById('email').value.trim()
-            };
-            fetch('/weekly_search', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            })
-            .then(response => response.json())
-            .then(data => console.log(data))
-            .catch(error => console.error('Error:', error));
-        }
+        
     </script>
 </body>
 </html>
