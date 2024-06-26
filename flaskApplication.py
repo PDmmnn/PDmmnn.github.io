@@ -28,7 +28,7 @@ session = Session()
 # Function to scrape websites
 def scrape_website(query):
     # Example for scraping a website
-    url = f"https://example.com/search?q={query}"
+    url = f"https://www.foerderdatenbank.de/FDB/Content/DE/Foerderprogramm*?q={query}"
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')
     
