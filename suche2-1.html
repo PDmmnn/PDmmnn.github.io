@@ -224,6 +224,37 @@ function buildQuery() {
     return query;
 }
 
+async function fetchPageContent(url) {
+    try {
+        const response = await fetch(url);
+        if (response.ok) {
+            return await response.text();
+        }
+        throw new Error('Failed to fetch page content');
+    } catch (error) {
+        console.error('Error fetching page content:', error);
+    }
+}
+
+function parsePageContent(html) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    
+    const foerderart = doc.querySelector('dt:contains("Förderart:") + dd')?.textContent.trim() || '';
+    const foerderbereich = doc.querySelector('dt:contains("Förderbereich:") + dd')?.textContent.trim() || '';
+    const foerdergebiet = doc.querySelector('dt:contains("Fördergebiet:") + dd')?.textContent.trim() || '';
+    const foerderberechtigt = doc.querySelector('dt:contains("Förderberechtigte:") + dd')?.textContent.trim() || '';
+    const foerdergeber = doc.querySelector('dt:contains("Fördergeber:") + dd')?.textContent.trim() || '';
+    
+    return {
+        foerderart,
+        foerderbereich,
+        foerdergebiet,
+        foerderberechtigt,
+        foerdergeber,
+    };
+}
+
 function search(query) {
     const resultsDiv = document.getElementById('results');
     resultsDiv.innerHTML = 'Suche läuft...';
@@ -235,19 +266,19 @@ function search(query) {
         .then(response => response.json())
         .then(data => {
             if (data.items) {
-                displayResults(data.items.map(item => ({
-                    title: item.title,
-                    description: item.snippet,
-                    url: item.link,
-                    // Assuming structured data available in item.pagemap
-                    foerderart: item.pagemap.metatags[0]['foerderart'] || '',
-                    foerderbereich: item.pagemap.metatags[0]['foerderbereich'] || '',
-                    foerderberechtigt: item.pagemap.metatags[0]['foerderberechtigt'] || '',
-                    foerdergebiet: item.pagemap.metatags[0]['foerdergebiet'] || '',
-                    foerdergeber: item.pagemap.metatags[0]['foerdergeber'] || '',
-                    foerderhoehe: item.pagemap.metatags[0]['foerderhoehe'] || '',
-                    foerderanteil: item.pagemap.metatags[0]['foerderanteil'] || ''
-                })));
+                const fetches = data.items.map(item => 
+                    fetchPageContent(item.link)
+                        .then(html => {
+                            const parsedContent = parsePageContent(html);
+                            return {
+                                title: item.title,
+                                description: item.snippet,
+                                url: item.link,
+                                ...parsedContent
+                            };
+                        })
+                );
+                Promise.all(fetches).then(results => displayResults(results));
             } else {
                 resultsDiv.innerHTML = 'Keine Ergebnisse gefunden.';
             }
@@ -262,16 +293,11 @@ function displayResults(results) {
     const resultsDiv = document.getElementById('results');
     resultsDiv.innerHTML = '';
 
-    if (results.length === 0) {
-        resultsDiv.innerHTML = 'Keine Ergebnisse gefunden.';
-        return;
-    }
-
     results.forEach(result => {
         const resultDiv = document.createElement('div');
         resultDiv.classList.add('result');
 
-        const title = document.createElement('h2');
+        const title = document.createElement('h3');
         title.textContent = result.title;
 
         const description = document.createElement('p');
@@ -282,15 +308,12 @@ function displayResults(results) {
         link.textContent = 'Mehr erfahren';
 
         const details = document.createElement('div');
-        details.classList.add('details');
         details.innerHTML = `
             <p><strong>Förderart:</strong> ${result.foerderart}</p>
             <p><strong>Förderbereich:</strong> ${result.foerderbereich}</p>
-            <p><strong>Förderberechtigt:</strong> ${result.foerderberechtigt}</p>
             <p><strong>Fördergebiet:</strong> ${result.foerdergebiet}</p>
+            <p><strong>Förderberechtigt:</strong> ${result.foerderberechtigt}</p>
             <p><strong>Fördergeber:</strong> ${result.foerdergeber}</p>
-            <p><strong>Förderhöhe:</strong> ${result.foerderhoehe}</p>
-            <p><strong>Förderanteil:</strong> ${result.foerderanteil}</p>
         `;
 
         resultDiv.appendChild(title);
@@ -348,7 +371,6 @@ autocomplete('foerderbereichbar', foerderbereichSuggestions);
 autocomplete('foerderberechtigtbar', foerderberechtigtSuggestions);
 autocomplete('foerdergebietbar', foerdergebietSuggestions);
 autocomplete('foerdergeberbar', foerdergeberSuggestions);
-
 
     </script>
 </body>
