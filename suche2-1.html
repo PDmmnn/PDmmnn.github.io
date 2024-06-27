@@ -241,19 +241,25 @@ function parsePageContent(html) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
 
-    const foerderart = doc.querySelector('dt:contains("Förderart:") + dd')?.textContent.trim() || '';
-    const foerderbereich = doc.querySelector('dt:contains("Förderbereich:") + dd')?.textContent.trim() || '';
-    const foerdergebiet = doc.querySelector('dt:contains("Fördergebiet:") + dd')?.textContent.trim() || '';
-    const foerderberechtigt = doc.querySelector('dt:contains("Förderberechtigte:") + dd')?.textContent.trim() || '';
-    const foerdergeber = doc.querySelector('dt:contains("Fördergeber:") + dd')?.textContent.trim() || '';
-
-    return {
-        foerderart,
-        foerderbereich,
-        foerdergebiet,
-        foerderberechtigt,
-        foerdergeber,
+    const gridItems = doc.querySelectorAll('.grid-modul--two-elements.document-info-fundingprogram dt, .grid-modul--two-elements.document-info-fundingprogram dd');
+    const parsedData = {
+        foerderart: '',
+        foerderbereich: '',
+        foerdergebiet: '',
+        foerderberechtigt: '',
+        foerdergeber: ''
     };
+
+    let currentKey = '';
+    gridItems.forEach(item => {
+        if (item.tagName === 'DT') {
+            currentKey = item.textContent.trim().replace(':', '').toLowerCase();
+        } else if (item.tagName === 'DD' && parsedData.hasOwnProperty(currentKey)) {
+            parsedData[currentKey] = item.textContent.trim();
+        }
+    });
+
+    return parsedData;
 }
 
 async function search(query) {
