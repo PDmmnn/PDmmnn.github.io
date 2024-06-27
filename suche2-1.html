@@ -227,40 +227,35 @@ function formatAmount(amountString) {
 
 
     function search(query) {
-        const resultsDiv = document.getElementById('results');
-        resultsDiv.innerHTML = 'Suche läuft...';
+        const apiKey = 'AIzaSyDor3KeS2NUadNOejG1-UsJiuksdgA5wZs'; // Replace with your actual API key
+        const cx = 'c186732db6bed4a3f'; // Replace with your actual Custom Search Engine ID
+        const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${encodeURIComponent(query)}`;
 
-        setTimeout(function() {
-            displayResults([
-                {
-                    title: "Förderprogramm 1",
-                    description: "Beschreibung 1",
-                    url: "http://example.com/1",
-                    terms: "Förderung in Höhe von 50.000 Euro für Projekte in Berlin",
-                    foerderart: "Zuschuss",
-                    foerderbereich: "Technologie",
-                    foerderberechtigt: "KMU",
-                    foerdergebiet: "Berlin",
-                    foerdergeber: "Bundesministerium für Wirtschaft",
-                    foerderhoehe: "50.000 Euro",
-                    foerderanteil: "50%"
-                },
-                {
-                    title: "Förderprogramm 2",
-                    description: "Beschreibung 2",
-                    url: "http://example.com/2",
-                    terms: "Förderung in Höhe von 20.000 Euro für Projekte in Bayern",
-                    foerderart: "Kredit",
-                    foerderbereich: "Energie",
-                    foerderberechtigt: "Start-ups",
-                    foerdergebiet: "Bayern",
-                    foerdergeber: "KfW",
-                    foerderhoehe: "20.000 Euro",
-                    foerderanteil: "30%"
-                }
-            ]);
-        }, 2000);
+        fetch(url)
+            .then(response => response.json())
+            .then(data => displayResults(data))
+            .catch(error => console.error('Error:', error));
     }
+
+function processResults(data, query) {
+            if (data.items) {
+                const searchTerms = query.split(' AND ').flatMap(term => term.replace(/"/g, '').split(' OR ').map(t => t.trim().toLowerCase()));
+                data.items.forEach(item => {
+                    const title = item.title.toLowerCase();
+                    const snippet = item.snippet.toLowerCase();
+                    item.termFrequency = searchTerms.reduce((acc, term) => {
+                        return acc + (title.match(new RegExp(term, 'g')) || []).length + (snippet.match(new RegExp(term, 'g')) || []).length;
+                    }, 0);
+                });
+
+                // Sort results by term frequency
+                data.items.sort((a, b) => b.termFrequency - a.termFrequency);
+
+                displayResults(data);
+            } else {
+                displayResults({items: []});
+            }
+        }
 
     function displayResults(results) {
         const resultsDiv = document.getElementById('results');
