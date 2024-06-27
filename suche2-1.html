@@ -300,7 +300,7 @@ async function search(query) {
 
 function displayResults(results) {
     const resultsDiv = document.getElementById('results');
-    resultsDiv.innerHTML = '';
+    resultsDiv.innerHTML = ''; // Clear previous results
 
     if (results.length === 0) {
         resultsDiv.innerHTML = 'Keine Ergebnisse gefunden.';
@@ -308,18 +308,39 @@ function displayResults(results) {
     }
 
     const resultList = document.createElement('ul');
+    resultList.classList.add('search-results');
+
     results.forEach(result => {
-        const item = document.createElement('li');
-        const title = document.createElement('h3');
-        title.innerHTML = `<a href="${result.url}" target="_blank">${result.title}</a>`;
-        const description = document.createElement('p');
-        description.textContent = result.description;
-        const details = document.createElement('p');
-        details.textContent = `Förderart: ${result.foerderart}, Förderbereich: ${result.foerderbereich}, Fördergebiet: ${result.foerdergebiet}, Förderberechtigte: ${result.foerderberechtigt}, Fördergeber: ${result.foerdergeber}`;
-        item.appendChild(title);
-        item.appendChild(description);
-        item.appendChild(details);
-        resultList.appendChild(item);
+        const resultItem = document.createElement('li');
+        resultItem.classList.add('search-result');
+
+        const titleElement = document.createElement('h3');
+        const titleLink = document.createElement('a');
+        titleLink.textContent = result.title;
+        titleLink.href = result.url;
+        titleLink.target = '_blank'; // Open link in new tab
+        titleLink.rel = 'noopener noreferrer'; // Security best practice
+        titleElement.appendChild(titleLink);
+        resultItem.appendChild(titleElement);
+
+        const descriptionElement = document.createElement('p');
+        descriptionElement.textContent = result.description;
+        resultItem.appendChild(descriptionElement);
+
+        // Append structured data to the result item
+        const structuredDataList = document.createElement('ul');
+        structuredDataList.classList.add('structured-data');
+        
+        for (const key in result) {
+            if (key !== 'title' && key !== 'description' && key !== 'url') {
+                const dataItem = document.createElement('li');
+                dataItem.innerHTML = `<strong>${key}:</strong> ${result[key]}`;
+                structuredDataList.appendChild(dataItem);
+            }
+        }
+
+        resultItem.appendChild(structuredDataList);
+        resultList.appendChild(resultItem);
     });
 
     resultsDiv.appendChild(resultList);
