@@ -1,8 +1,15 @@
-document.getElementById('foerderalertForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        const query = buildQuery();
-        search(query);
-    });
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('foerderalertForm');
+    if (form) {
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const query = buildQuery();
+            search(query);
+        });
+    } else {
+        console.error('Form element "foerderalertForm" not found.');
+    }
+});
 
     function formatAmount(amountString) {
     const amount = parseFloat(amountString.replace(/,/g, ''));
@@ -47,6 +54,13 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     const foerdergebietbar = document.getElementById('foerdergebietbar').value.trim();
     const foerdergeberbar = document.getElementById('foerdergeberbar').value.trim();
 
+ // Example checks and logs
+    if (!sonstiges) {
+        console.error('Element with ID "sonstiges" not found.');
+        return '';
+    }
+    const sonstigesValue = sonstiges.value.trim();
+            
     let query = '';
 
     if (sonstiges) {
