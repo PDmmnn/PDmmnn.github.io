@@ -320,6 +320,7 @@ function displayResults(results) {
         titleLink.href = result.url;
         titleLink.target = '_blank'; // Open link in new tab
         titleLink.rel = 'noopener noreferrer'; // Security best practice
+        titleLink.addEventListener('click', () => fetchAndDisplayDetails(result, resultItem));
         titleElement.appendChild(titleLink);
         resultItem.appendChild(titleElement);
 
@@ -327,28 +328,54 @@ function displayResults(results) {
         descriptionElement.textContent = result.description;
         resultItem.appendChild(descriptionElement);
 
-        // Create a list for structured data
-        const structuredDataList = document.createElement('ul');
-        structuredDataList.classList.add('structured-data');
-
-        // Loop through structured data keys and add them to the list
-        for (const key in result) {
-            if (key !== 'title' && key !== 'description' && key !== 'url') {
-                const dataItem = document.createElement('li');
-                dataItem.innerHTML = `<strong>${key}:</strong> ${result[key]}`;
-                structuredDataList.appendChild(dataItem);
-            }
-        }
-
-        // Append the structured data list to the result item
-        resultItem.appendChild(structuredDataList);
-
-        // Append the result item to the results list
         resultList.appendChild(resultItem);
     });
 
-    // Append the results list to the results container
     resultsDiv.appendChild(resultList);
+}
+
+async function fetchAndDisplayDetails(result, resultItem) {
+    try {
+        const response = await fetch(result.url); // Assuming result.url contains the full URL of the detailed page
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const htmlContent = await response.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlContent, 'text/html');
+
+        // Extract and display additional details from the fetched HTML content
+        const structuredDataList = extractDetails(doc); // Implement this function to extract structured data
+
+        // Clear existing details if needed
+        const existingDetails = resultItem.querySelector('.structured-data');
+        if (existingDetails) {
+            resultItem.removeChild(existingDetails);
+        }
+
+        // Append the fetched structured data to the resultItem
+        resultItem.appendChild(structuredDataList);
+    } catch (error) {
+        console.error('Error fetching or displaying details:', error);
+    }
+}
+
+function extractDetails(doc) {
+    const structuredDataList = document.createElement('ul');
+    structuredDataList.classList.add('structured-data');
+
+    // Implement logic to extract structured data from the fetched HTML document (doc)
+    // Example:
+    const dtElements = doc.querySelectorAll('dt');
+    dtElements.forEach(dt => {
+        const dataItem = document.createElement('li');
+        const key = dt.textContent.trim();
+        const value = dt.nextElementSibling.textContent.trim(); // Assuming next element is dd or similar
+        dataItem.innerHTML = `<strong>${key}:</strong> ${value}`;
+        structuredDataList.appendChild(dataItem);
+    });
+
+    return structuredDataList;
 }
 
     </script>
