@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FörderAlert Form</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="main-container">
+        <div class="container">
+            <h1><a href="https://pdmmnn.github.io">FörderAlert</a></h1>
+            <form id="foerderalertForm">
+                <label for="name">Name Suchauftrag</label>
+                <input type="text" id="name" name="name" placeholder="...">
+
+                <label for="email">E-Mail</label>
+                <input type="email" id="email" name="email" placeholder="...">
+
+                <!-- Search Bar for Förderhöhe -->
+                <label for="searchbar">Förderhöhe in Euro</label>
+                <div class="search-range">
+                    <input type="number" id="minAmount" name="minAmount" placeholder="Min">
+                    <span> - </span>
+                    <input type="number" id="maxAmount" name="maxAmount" placeholder="Max">
+                </div>
+
+                <!-- Search Bar for Förderanteil -->
+                <label for="foerderanteil">Förderanteil in Prozent</label>
+                <div class="search-range">
+                <input type="number" id="percentageMin" name="percentageMin" placeholder="Min">
+                <span> - </span>
+                <input type="number" id="percentageMax" name="percentageMax" placeholder="Max">
+                </div>
+                
+                <!-- Search Bar for Förderart -->
+                <label for="foerderartbar">Förderart</label>
+                <input type="text" id="foerderartbar" name="foerderartbar" placeholder="...">
+                <div id="dropdown-foerderart" class="dropdown-content"></div>
+
+                <!-- Search Bar for Förderbereich -->
+                <label for="foerderbereichbar">Förderbereich</label>
+                <input type="text" id="foerderbereichbar" name="foerderbereichbar" placeholder="...">
+                <div id="dropdown-foerderbereich" class="dropdown-content"></div>
+
+                <!-- Search Bar for Förderberechtigt -->
+                <label for="foerderberechtigtbar">Förderberechtigt</label>
+                <input type="text" id="foerderberechtigtbar" name="foerderberechtigtbar" placeholder="...">
+                <div id="dropdown-foerderberechtigt" class="dropdown-content"></div>
+                
+                <!-- Search Bar for Fördergebiet -->
+                <label for="foerdergebietbar">Fördergebiet</label>
+                <input type="text" id="foerdergebietbar" name="foerdergebietbar" placeholder="...">
+                <div id="dropdown-foerdergebiet" class="dropdown-content"></div>
+                
+                <!-- Search Bar for Fördergeber -->
+                <label for="foerdergeberbar">Fördergeber</label>
+                <input type="text" id="foerdergeberbar" name="foerdergeberbar" placeholder="...">
+                <div id="dropdown-foerdergeber" class="dropdown-content"></div>
+
+                <label for="sonstiges">Spezifische Suchbegriffe</label>
+                <input type="text" id="sonstiges" name="sonstiges" placeholder="...">
+
+                <div class="button-group">
+                    <button type="submit">Suche</button>
+                    <button type="button" onclick="createSearchRequest()">Suchauftrag erstellen</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="container">
+            <h1>Ergebnisse</h1>
+            <div id="results" class="results"></div>
+        </div>
+    </div>
+    <script src="suche2-0.js">
+
+document.getElementById('foerderalertForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const query = buildQuery();
+        search(query);
+    });
+
+function formatAmount(amountString) {
+    const amount = parseFloat(amountString.replace(/,/g, ''));
+    if (isNaN(amount)) {
+        return amountString;
+    }
+
+    const formats = [];
+
+    // Format as plain number
+    formats.push(amount.toLocaleString('de-DE')); // German locale for number formatting (1.000.000)
+
+    // Format as millions
+    const million = amount / 1000000;
+    if (million >= 1) {
+        formats.push(`${million.toFixed(1)} Mio`);
+        formats.push(`${million.toFixed(1)} Millionen`);
+        formats.push(`${million.toFixed(1).replace('.', ',')} Mio`);
+        formats.push(`${million.toFixed(1).replace('.', ',')} Millionen`);
+    }
+
+    return formats.join(' OR ');
+}
+
+    function buildQuery() {
+    const germanStates = [
+        "Baden-Württemberg", "Bayern", "Berlin", "Brandenburg", "Bremen",
+        "Hamburg", "Hessen", "Mecklenburg-Vorpommern", "Niedersachsen", "Nordrhein-Westfalen",
+        "Rheinland-Pfalz", "Saarland", "Sachsen", "Sachsen-Anhalt", "Schleswig-Holstein", "Thüringen",
+            "Baden-Württemberg,", "Bayern,", "Berlin,", "Brandenburg,", "Bremen,",
+        "Hamburg,", "Hessen,", "Mecklenburg-Vorpommern,", "Niedersachsen,", "Nordrhein-Westfalen,",
+        "Rheinland-Pfalz,", "Saarland,", "Sachsen,", "Sachsen-Anhalt,", "Schleswig-Holstein,", "Thüringen,"
+    ];
+    const sonstiges = document.getElementById('sonstiges').value.trim();
+    const minAmount = document.getElementById('minAmount').value.trim();
+    const maxAmount = document.getElementById('maxAmount').value.trim();
+    const percentageMin = document.getElementById('percentageMin').value.trim();
+    const percentageMax = document.getElementById('percentageMax').value.trim();
+    const foerderartbar = document.getElementById('foerderartbar').value.trim();
+    const foerderbereichbar = document.getElementById('foerderbereichbar').value.trim();
+    const foerderberechtigtbar = document.getElementById('foerderberechtigtbar').value.trim();
+    const foerdergebietbar = document.getElementById('foerdergebietbar').value.trim();
+    const foerdergeberbar = document.getElementById('foerdergeberbar').value.trim();
+
+    let query = '';
+
+    if (sonstiges) {
+        query += `(${sonstiges})`;
+    }
+      // Amount search
+    if (minAmount && maxAmount) {
+        const min = parseInt(minAmount, 10);
+        const max = parseInt(maxAmount, 10);
+        if (min <= max) {
+            let amountQuery = '';
+            for (let i = min; i <= max; i += 10000) {
+                amountQuery += `${formatAmount(i.toString())}`;
+                if (i + 10000 <= max) {
+                    amountQuery += ' OR ';
+                }
+            }
+            query += query ? ` AND (${amountQuery})` : `(${amountQuery})`;
+        }
+    } else if (minAmount) {
+        query += query ? ` AND (${formatAmount(minAmount)})` : `(${formatAmount(minAmount)})`;
+    } else if (maxAmount) {
+        query += query ? ` AND (${formatAmount(maxAmount)})` : `(${formatAmount(maxAmount)})`;
+    }
+
+    // Percentage search
+    if (percentageMin || percentageMax) {
+        let percentageQuery = '';
+        if (percentageMin && percentageMax) {
+            const min = parseInt(percentageMin, 10);
+            const max = parseInt(percentageMax, 10);
+            if (min <= max) {
+                for (let i = min; i <= max; i++) {
+                    percentageQuery += `"${i}%" OR "${i} Prozent"`;
+                    if (i < max) {
+                        percentageQuery += ' OR ';
+                    }
+                }
+            }
+        } else if (percentageMin) {
+            percentageQuery = `"${percentageMin}%" OR "${percentageMin} Prozent"`;
+        } else if (percentageMax) {
+            percentageQuery = `"${percentageMax}%" OR "${percentageMax} Prozent"`;
+        }
+        query += query ? ` AND (${percentageQuery})` : `(${percentageQuery})`;
+    }
+    if (foerderartbar) {
+        const foerderartTerms = foerderartbar.split(',')
+            .map(term => term.trim())
+            .filter(term => term !== '')  // Filter out empty terms
+            .map(term => `"${term}"`)
+            .join(' OR ');
+        query += query ? ` AND (${foerderartTerms})` : `(${foerderartTerms})`;
+    }
+
+    if (foerderbereichbar) {
+        const foerderbereichTerms = foerderbereichbar.split(',')
+            .map(term => term.trim())
+            .filter(term => term !== '')  // Filter out empty terms
+            .map(term => `"${term}"`)
+            .join(' OR ');
+        query += query ? ` AND (${foerderbereichTerms})` : `(${foerderbereichTerms})`;
+    }
+
+    if (foerderberechtigtbar) {
+        const foerderberechtigtTerms = foerderberechtigtbar.split(',')
+            .map(term => term.trim())
+            .filter(term => term !== '')  // Filter out empty terms
+            .map(term => `"${term}"`)
+            .join(' OR ');
+        query += query ? ` AND (${foerderberechtigtTerms})` : `(${foerderberechtigtTerms})`;
+    }
+
+    if (foerdergebietbar) {
+        const foerdergebietTerms = foerdergebietbar.split(',')
+            .map(term => term.trim())
+            .filter(term => term !== '')  // Filter out empty terms
+            .map(term => {
+                if (germanStates.includes(term)) {
+                    return `"${term}"`;
+                } else {
+                    return `"${term}"`;
+                }
+            })
+            .join(' OR ');
+        query += query ? ` AND (${foerdergebietTerms})` : `(${foerdergebietTerms})`;
+    }
+
+    if (foerdergeberbar) {
+        const foerdergeberTerms = foerdergeberbar.split(',')
+            .map(term => term.trim())
+            .filter(term => term !== '')  // Filter out empty terms
+            .map(term => `"${term}"`)
+            .join(' OR ');
+        query += query ? ` AND (${foerdergeberTerms})` : `(${foerdergeberTerms})`;
+    }
+
+    return query;
+}
+
+
+
+    function search(query) {
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = 'Suche läuft...';
+
+        setTimeout(function() {
+            displayResults([
+                {
+                    title: "Förderprogramm 1",
+                    description: "Beschreibung 1",
+                    url: "http://example.com/1",
+                    terms: "Förderung in Höhe von 50.000 Euro für Projekte in Berlin",
+                    foerderart: "Zuschuss",
+                    foerderbereich: "Technologie",
+                    foerderberechtigt: "KMU",
+                    foerdergebiet: "Berlin",
+                    foerdergeber: "Bundesministerium für Wirtschaft",
+                    foerderhoehe: "50.000 Euro",
+                    foerderanteil: "50%"
+                },
+                {
+                    title: "Förderprogramm 2",
+                    description: "Beschreibung 2",
+                    url: "http://example.com/2",
+                    terms: "Förderung in Höhe von 20.000 Euro für Projekte in Bayern",
+                    foerderart: "Kredit",
+                    foerderbereich: "Energie",
+                    foerderberechtigt: "Start-ups",
+                    foerdergebiet: "Bayern",
+                    foerdergeber: "KfW",
+                    foerderhoehe: "20.000 Euro",
+                    foerderanteil: "30%"
+                }
+            ]);
+        }, 2000);
+    }
+
+    function displayResults(results) {
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = '';
+
+        if (results.length === 0) {
+            resultsDiv.innerHTML = 'Keine Ergebnisse gefunden.';
+            return;
+        }
+
+        results.forEach(result => {
+            const resultDiv = document.createElement('div');
+            resultDiv.classList.add('result');
+
+            const title = document.createElement('h2');
+            title.textContent = result.title;
+
+            const description = document.createElement('p');
+            description.textContent = result.description;
+
+            const link = document.createElement('a');
+            link.href = result.url;
+            link.textContent = 'Mehr erfahren';
+
+            const details = document.createElement('div');
+            details.classList.add('details');
+            details.innerHTML = `
+                <p><strong>Förderart:</strong> ${result.foerderart}</p>
+                <p><strong>Förderbereich:</strong> ${result.foerderbereich}</p>
+                <p><strong>Förderberechtigt:</strong> ${result.foerderberechtigt}</p>
+                <p><strong>Fördergebiet:</strong> ${result.foerdergebiet}</p>
+                <p><strong>Fördergeber:</strong> ${result.foerdergeber}</p>
+                <p><strong>Förderhöhe:</strong> ${result.foerderhoehe}</p>
+                <p><strong>Förderanteil:</strong> ${result.foerderanteil}</p>
+            `;
+
+            resultDiv.appendChild(title);
+            resultDiv.appendChild(description);
+            resultDiv.appendChild(link);
+            resultDiv.appendChild(details);
+
+            resultsDiv.appendChild(resultDiv);
+        });
+    }
+
+    function createSearchRequest() {
+        alert("Suchauftrag erfolgreich erstellt!");
+    }
+
+    // Autocomplete functionality
+    function autocomplete(inputId, suggestions) {
+        const input = document.getElementById(inputId);
+        const dropdown = document.getElementById('dropdown-' + inputId);
+
+        input.addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            dropdown.innerHTML = '';
+            if (!query) {
+                return;
+            }
+
+            const matches = suggestions.filter(item => item.toLowerCase().includes(query));
+            matches.forEach(match => {
+                const div = document.createElement('div');
+                div.textContent = match;
+                div.addEventListener('click', function() {
+                    input.value = match;
+                    dropdown.innerHTML = '';
+                });
+                dropdown.appendChild(div);
+            });
+        });
+
+        input.addEventListener('blur', function() {
+            setTimeout(() => {
+                dropdown.innerHTML = '';
+            }, 100);
+        });
+    }
+
+    const foerderartSuggestions = ["Zuschuss", "Kredit", "Bürgschaft"];
+    const foerderbereichSuggestions = ["Technologie", "Energie", "Umwelt"];
+    const foerderberechtigtSuggestions = ["KMU", "Start-ups", "Gemeinden"];
+    const foerdergebietSuggestions = ["Berlin", "Bayern", "NRW"];
+    const foerdergeberSuggestions = ["Bundesministerium für Wirtschaft", "KfW", "Landesbank"];
+
+    autocomplete('foerderartbar', foerderartSuggestions);
+    autocomplete('foerderbereichbar', foerderbereichSuggestions);
+    autocomplete('foerderberechtigtbar', foerderberechtigtSuggestions);
+    autocomplete('foerdergebietbar', foerdergebietSuggestions);
+    autocomplete('foerdergeberbar', foerdergeberSuggestions);
+
+    </script>
+</body>
+</html>
