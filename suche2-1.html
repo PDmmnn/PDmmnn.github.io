@@ -76,10 +76,10 @@
     <script>
 
 document.getElementById('foerderalertForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        const query = buildQuery();
-        search(query);
-    });
+    event.preventDefault();
+    const query = buildQuery();
+    search(query);
+});
 
 function formatAmount(amountString) {
     const amount = parseFloat(amountString.replace(/,/g, ''));
@@ -104,12 +104,12 @@ function formatAmount(amountString) {
     return formats.join(' OR ');
 }
 
-    function buildQuery() {
+function buildQuery() {
     const germanStates = [
         "Baden-Württemberg", "Bayern", "Berlin", "Brandenburg", "Bremen",
         "Hamburg", "Hessen", "Mecklenburg-Vorpommern", "Niedersachsen", "Nordrhein-Westfalen",
         "Rheinland-Pfalz", "Saarland", "Sachsen", "Sachsen-Anhalt", "Schleswig-Holstein", "Thüringen",
-            "Baden-Württemberg,", "Bayern,", "Berlin,", "Brandenburg,", "Bremen,",
+        "Baden-Württemberg,", "Bayern,", "Berlin,", "Brandenburg,", "Bremen,",
         "Hamburg,", "Hessen,", "Mecklenburg-Vorpommern,", "Niedersachsen,", "Nordrhein-Westfalen,",
         "Rheinland-Pfalz,", "Saarland,", "Sachsen,", "Sachsen-Anhalt,", "Schleswig-Holstein,", "Thüringen,"
     ];
@@ -129,7 +129,7 @@ function formatAmount(amountString) {
     if (sonstiges) {
         query += `(${sonstiges})`;
     }
-      // Amount search
+    // Amount search
     if (minAmount && maxAmount) {
         const min = parseInt(minAmount, 10);
         const max = parseInt(maxAmount, 10);
@@ -224,129 +224,131 @@ function formatAmount(amountString) {
     return query;
 }
 
+function search(query) {
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = 'Suche läuft...';
 
+    const apiKey = 'AIzaSyDor3KeS2NUadNOejG1-UsJiuksdgA5wZs'; // Replace with your API key
+    const cx = 'c186732db6bed4a3f'; // Replace with your search engine ID
 
-    function search(query) {
-        const apiKey = 'AIzaSyDor3KeS2NUadNOejG1-UsJiuksdgA5wZs'; // Replace with your actual API key
-        const cx = 'c186732db6bed4a3f'; // Replace with your actual Custom Search Engine ID
-        const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${encodeURIComponent(query)}`;
+    fetch(`https://www.googleapis.com/customsearch/v1?q=${encodeURIComponent(query)}&key=${apiKey}&cx=${cx}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.items) {
+                displayResults(data.items.map(item => ({
+                    title: item.title,
+                    description: item.snippet,
+                    url: item.link,
+                    // Assuming structured data available in item.pagemap
+                    foerderart: item.pagemap.metatags[0]['foerderart'] || '',
+                    foerderbereich: item.pagemap.metatags[0]['foerderbereich'] || '',
+                    foerderberechtigt: item.pagemap.metatags[0]['foerderberechtigt'] || '',
+                    foerdergebiet: item.pagemap.metatags[0]['foerdergebiet'] || '',
+                    foerdergeber: item.pagemap.metatags[0]['foerdergeber'] || '',
+                    foerderhoehe: item.pagemap.metatags[0]['foerderhoehe'] || '',
+                    foerderanteil: item.pagemap.metatags[0]['foerderanteil'] || ''
+                })));
+            } else {
+                resultsDiv.innerHTML = 'Keine Ergebnisse gefunden.';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching search results:', error);
+            resultsDiv.innerHTML = 'Fehler bei der Suche.';
+        });
+}
 
-        fetch(url)
-            .then(response => response.json())
-            .then(data => displayResults(data))
-            .catch(error => console.error('Error:', error));
+function displayResults(results) {
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = '';
+
+    if (results.length === 0) {
+        resultsDiv.innerHTML = 'Keine Ergebnisse gefunden.';
+        return;
     }
 
-function processResults(data, query) {
-            if (data.items) {
-                const searchTerms = query.split(' AND ').flatMap(term => term.replace(/"/g, '').split(' OR ').map(t => t.trim().toLowerCase()));
-                data.items.forEach(item => {
-                    const title = item.title.toLowerCase();
-                    const snippet = item.snippet.toLowerCase();
-                    item.termFrequency = searchTerms.reduce((acc, term) => {
-                        return acc + (title.match(new RegExp(term, 'g')) || []).length + (snippet.match(new RegExp(term, 'g')) || []).length;
-                    }, 0);
-                });
+    results.forEach(result => {
+        const resultDiv = document.createElement('div');
+        resultDiv.classList.add('result');
 
-                // Sort results by term frequency
-                data.items.sort((a, b) => b.termFrequency - a.termFrequency);
+        const title = document.createElement('h2');
+        title.textContent = result.title;
 
-                displayResults(data);
-            } else {
-                displayResults({items: []});
-            }
-        }
+        const description = document.createElement('p');
+        description.textContent = result.description;
 
-    function displayResults(results) {
-        const resultsDiv = document.getElementById('results');
-        resultsDiv.innerHTML = '';
+        const link = document.createElement('a');
+        link.href = result.url;
+        link.textContent = 'Mehr erfahren';
 
-        if (results.length === 0) {
-            resultsDiv.innerHTML = 'Keine Ergebnisse gefunden.';
+        const details = document.createElement('div');
+        details.classList.add('details');
+        details.innerHTML = `
+            <p><strong>Förderart:</strong> ${result.foerderart}</p>
+            <p><strong>Förderbereich:</strong> ${result.foerderbereich}</p>
+            <p><strong>Förderberechtigt:</strong> ${result.foerderberechtigt}</p>
+            <p><strong>Fördergebiet:</strong> ${result.foerdergebiet}</p>
+            <p><strong>Fördergeber:</strong> ${result.foerdergeber}</p>
+            <p><strong>Förderhöhe:</strong> ${result.foerderhoehe}</p>
+            <p><strong>Förderanteil:</strong> ${result.foerderanteil}</p>
+        `;
+
+        resultDiv.appendChild(title);
+        resultDiv.appendChild(description);
+        resultDiv.appendChild(link);
+        resultDiv.appendChild(details);
+
+        resultsDiv.appendChild(resultDiv);
+    });
+}
+
+function createSearchRequest() {
+    alert("Suchauftrag erfolgreich erstellt!");
+}
+
+// Autocomplete functionality
+function autocomplete(inputId, suggestions) {
+    const input = document.getElementById(inputId);
+    const dropdown = document.getElementById('dropdown-' + inputId);
+
+    input.addEventListener('input', function() {
+        const query = this.value.toLowerCase();
+        dropdown.innerHTML = '';
+        if (!query) {
             return;
         }
 
-        results.forEach(result => {
-            const resultDiv = document.createElement('div');
-            resultDiv.classList.add('result');
-
-            const title = document.createElement('h2');
-            title.textContent = result.title;
-
-            const description = document.createElement('p');
-            description.textContent = result.description;
-
-            const link = document.createElement('a');
-            link.href = result.url;
-            link.textContent = 'Mehr erfahren';
-
-            const details = document.createElement('div');
-            details.classList.add('details');
-            details.innerHTML = `
-                <p><strong>Förderart:</strong> ${result.foerderart}</p>
-                <p><strong>Förderbereich:</strong> ${result.foerderbereich}</p>
-                <p><strong>Förderberechtigt:</strong> ${result.foerderberechtigt}</p>
-                <p><strong>Fördergebiet:</strong> ${result.foerdergebiet}</p>
-                <p><strong>Fördergeber:</strong> ${result.foerdergeber}</p>
-                <p><strong>Förderhöhe:</strong> ${result.foerderhoehe}</p>
-                <p><strong>Förderanteil:</strong> ${result.foerderanteil}</p>
-            `;
-
-            resultDiv.appendChild(title);
-            resultDiv.appendChild(description);
-            resultDiv.appendChild(link);
-            resultDiv.appendChild(details);
-
-            resultsDiv.appendChild(resultDiv);
-        });
-    }
-
-    function createSearchRequest() {
-        alert("Suchauftrag erfolgreich erstellt!");
-    }
-
-    // Autocomplete functionality
-    function autocomplete(inputId, suggestions) {
-        const input = document.getElementById(inputId);
-        const dropdown = document.getElementById('dropdown-' + inputId);
-
-        input.addEventListener('input', function() {
-            const query = this.value.toLowerCase();
-            dropdown.innerHTML = '';
-            if (!query) {
-                return;
-            }
-
-            const matches = suggestions.filter(item => item.toLowerCase().includes(query));
-            matches.forEach(match => {
-                const div = document.createElement('div');
-                div.textContent = match;
-                div.addEventListener('click', function() {
-                    input.value = match;
-                    dropdown.innerHTML = '';
-                });
-                dropdown.appendChild(div);
-            });
-        });
-
-        input.addEventListener('blur', function() {
-            setTimeout(() => {
+        const matches = suggestions.filter(item => item.toLowerCase().includes(query));
+        matches.forEach(match => {
+            const div = document.createElement('div');
+            div.textContent = match;
+            div.addEventListener('click', function() {
+                input.value = match;
                 dropdown.innerHTML = '';
-            }, 100);
+            });
+            dropdown.appendChild(div);
         });
-    }
+    });
 
-    const foerderartSuggestions = ["Zuschuss", "Kredit", "Bürgschaft"];
-    const foerderbereichSuggestions = ["Technologie", "Energie", "Umwelt"];
-    const foerderberechtigtSuggestions = ["KMU", "Start-ups", "Gemeinden"];
-    const foerdergebietSuggestions = ["Berlin", "Bayern", "NRW"];
-    const foerdergeberSuggestions = ["Bundesministerium für Wirtschaft", "KfW", "Landesbank"];
+    input.addEventListener('blur', function() {
+        setTimeout(() => {
+            dropdown.innerHTML = '';
+        }, 100);
+    });
+}
 
-    autocomplete('foerderartbar', foerderartSuggestions);
-    autocomplete('foerderbereichbar', foerderbereichSuggestions);
-    autocomplete('foerderberechtigtbar', foerderberechtigtSuggestions);
-    autocomplete('foerdergebietbar', foerdergebietSuggestions);
-    autocomplete('foerdergeberbar', foerdergeberSuggestions);
+const foerderartSuggestions = ["Zuschuss", "Kredit", "Bürgschaft"];
+const foerderbereichSuggestions = ["Technologie", "Energie", "Umwelt"];
+const foerderberechtigtSuggestions = ["KMU", "Start-ups", "Gemeinden"];
+const foerdergebietSuggestions = ["Berlin", "Bayern", "NRW"];
+const foerdergeberSuggestions = ["Bundesministerium für Wirtschaft", "KfW", "Landesbank"];
+
+autocomplete('foerderartbar', foerderartSuggestions);
+autocomplete('foerderbereichbar', foerderbereichSuggestions);
+autocomplete('foerderberechtigtbar', foerderberechtigtSuggestions);
+autocomplete('foerdergebietbar', foerdergebietSuggestions);
+autocomplete('foerdergeberbar', foerdergeberSuggestions);
+
 
     </script>
 </body>
