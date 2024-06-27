@@ -327,10 +327,11 @@ function displayResults(results) {
         descriptionElement.textContent = result.description;
         resultItem.appendChild(descriptionElement);
 
-        // Append structured data to the result item
+        // Create a list for structured data
         const structuredDataList = document.createElement('ul');
         structuredDataList.classList.add('structured-data');
-        
+
+        // Loop through structured data keys and add them to the list
         for (const key in result) {
             if (key !== 'title' && key !== 'description' && key !== 'url') {
                 const dataItem = document.createElement('li');
@@ -339,10 +340,14 @@ function displayResults(results) {
             }
         }
 
+        // Append the structured data list to the result item
         resultItem.appendChild(structuredDataList);
+
+        // Append the result item to the results list
         resultList.appendChild(resultItem);
     });
 
+    // Append the results list to the results container
     resultsDiv.appendChild(resultList);
 }
 
