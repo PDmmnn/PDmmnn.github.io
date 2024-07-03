@@ -98,6 +98,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
             .map(term => term.trim())
             .filter(term => term !== '')  // Filter out empty terms
             .map(term => `"${term}"`)
+            .map(term => `"${term}" AROUND(20) "Förderart:" OR "${term}*art*"`)
             .join(' OR ');
         query += query ? ` AND (${foerderartTerms})` : `(${foerderartTerms})`;
     }
@@ -108,7 +109,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
             .filter(term => term !== '')  // Filter out empty terms
             .map(term => `"${term}"`)
             .join(' OR ');
-        query += query ? ` AND (${foerderbereichTerms})` : `(${foerderbereichTerms})`;
+        query += query ? ` NEAR (${foerderbereichTerms})` : `(${foerderbereichTerms})`;
     }
 
     if (foerderberechtigtbar) {
@@ -119,6 +120,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
                 .filter(term => term !== '')
                 //.map(term => `"Förderberechtigte: ${term}" OR "${term}*berechtigt*"`)
                 .map(term => `"Förderberechtigte\\s*:\\s*${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}" OR "*berechtigt* ${term}"`)
+                .map(term => `"${term}" AROUND(20) "Förderberechtigte:" OR "${term}*berechtigt*"`)
                 .join(' OR ');
         } else {
             foerderberechtigtTerms = foerderberechtigtbar.split(',')
