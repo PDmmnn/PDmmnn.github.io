@@ -198,7 +198,7 @@ function processResults(data, query) {
 
     function displayResults(data) {
         const resultsDiv = document.getElementById('results');
-        resultsDiv.innerHTML = '';
+        resultsDiv.innerHTML = ''; // Clear previous results ("Suche läuft...")
 
         if (data.items) {
             data.items.forEach(item => {
@@ -214,7 +214,7 @@ function processResults(data, query) {
                 resultsDiv.appendChild(resultItem);
             });
         } else {
-            resultsDiv.innerHTML = 'No results found';
+            resultsDiv.innerHTML = 'Keine Ergebnisse Gefunden';
         }
     }
 // Search terms for each search bar
