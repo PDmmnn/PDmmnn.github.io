@@ -69,7 +69,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         let percentageQuery = '';
         
                 for (let i = 1; i <= 100; i++) {
-                    percentageQuery += `"${i}%" OR "${i} %" OR "${i} Prozent"`;
+                    percentageQuery += `"${i}" AROUND(0) "%" OR "Prozent"`;
                     if (i < 100) {
                     percentageQuery += ' OR ';
                     }
