@@ -44,7 +44,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     const foerderartbar = document.getElementById('foerderartbar').value.trim();
     const foerderbereichbar = document.getElementById('foerderbereichbar').value.trim();
     const foerderberechtigtbar = document.getElementById('foerderberechtigtbar').value.trim();
-    const foerdergebietbar = document.getElementById('foerdergebietbar').value.trim();
+    const foerdergebietbar = "Bremen"; //document.getElementById('foerdergebietbar').value.trim();
     const foerdergeberbar = document.getElementById('foerdergeberbar').value.trim();
 
     let query = '';
