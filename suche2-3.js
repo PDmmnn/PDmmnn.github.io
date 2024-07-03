@@ -72,9 +72,9 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
             const max = parseInt(percentageMax, 10);
             if (min <= max) {
                 for (let i = min; i <= max; i++) {
-                    percentageQuery += `"${i}" AROUND(1) "%" OR "Prozent"`; //+= `"${i}%" OR "${i} %" OR "${i} Prozent"`;
+                    percentageQuery += `"${i}%" OR "${i} %" OR "${i} Prozent"`;
                     if (i < max) {
-                        percentageQuery += ' OR ';
+                    percentageQuery += ' OR ';
                     }
                 }
             }
