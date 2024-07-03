@@ -56,12 +56,12 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
                     amountQuery += ' OR ';
                 }
             }
-            query += query ? ` AND (${amountQuery})` : `(${amountQuery})`;
+            query += query ? ` NEAR (${amountQuery})` : `(${amountQuery})`;
         }
     } else if (minAmount) {
-        query += query ? ` AND (${formatAmount(minAmount)})` : `(${formatAmount(minAmount)})`;
+        query += query ? ` NEAR (${formatAmount(minAmount)})` : `(${formatAmount(minAmount)})`;
     } else if (maxAmount) {
-        query += query ? ` AND (${formatAmount(maxAmount)})` : `(${formatAmount(maxAmount)})`;
+        query += query ? ` NEAR (${formatAmount(maxAmount)})` : `(${formatAmount(maxAmount)})`;
     }
 
     // Percentage search
@@ -83,7 +83,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         } else if (percentageMax) {
             percentageQuery = `"${percentageMax}%" OR "${percentageMax} Prozent"`;
         }
-        query += query ? ` AND (${percentageQuery})` : `(${percentageQuery})`;
+        query += query ? ` NEAR (${percentageQuery})` : `(${percentageQuery})`;
     }
     if (foerderartbar) {
         const foerderartTerms = foerderartbar.split(',')
