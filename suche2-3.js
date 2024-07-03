@@ -67,24 +67,17 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     // Percentage search
     if (percentageMin || percentageMax) {
         let percentageQuery = '';
-        if (percentageMin && percentageMax) {
-            const min = parseInt(percentageMin, 10);
-            const max = parseInt(percentageMax, 10);
-            if (min <= max) {
-                for (let i = min; i <= max; i++) {
+        
+                for (let i = 1; i <= 100; i++) {
                     percentageQuery += `"${i}%" OR "${i} %" OR "${i} Prozent"`;
-                    if (i < max) {
+                    if (i < 100) {
                     percentageQuery += ' OR ';
                     }
                 }
-            }
-        } else if (percentageMin) {
-            percentageQuery = `"${percentageMin}" AROUND(1) "%" OR "Prozent"`; //`"${percentageMin}%" OR "${percentageMin} %" OR "${percentageMin} Prozent"`;
-        } else if (percentageMax) {
-            percentageQuery = `"${percentageMax}" AROUND(1) "%" OR "Prozent"`; //`"${percentageMax}%" OR "${percentageMax} %" OR "${percentageMax} Prozent"`;
-        }
+        
         query += query ? ` NEAR (${percentageQuery})` : `(${percentageQuery})`;
     }
+            
     if (foerderartbar) {
         const foerderartTerms = foerderartbar.split(',')
             .map(term => term.trim())
