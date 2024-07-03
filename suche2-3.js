@@ -162,6 +162,9 @@ function formatPercentage(percentageString) {
 }
 
 function search(query) {
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = 'Suche läuft...';
+        
         const apiKey = 'AIzaSyDor3KeS2NUadNOejG1-UsJiuksdgA5wZs'; // Replace with your actual API key
         const cx = 'c186732db6bed4a3f'; // Replace with your actual Custom Search Engine ID
         const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${encodeURIComponent(query)}`;
