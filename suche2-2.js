@@ -44,7 +44,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     const foerderartbar = document.getElementById('foerderartbar').value.trim();
     const foerderbereichbar = document.getElementById('foerderbereichbar').value.trim();
     const foerderberechtigtbar = document.getElementById('foerderberechtigtbar').value.trim();
-    const foerdergebietbar = "Bremen"; //document.getElementById('foerdergebietbar').value.trim();
+    const foerdergebietbar = "Bremen, bundesweit"; //document.getElementById('foerdergebietbar').value.trim();
     const foerdergeberbar = document.getElementById('foerdergeberbar').value.trim();
 
     let query = '';
@@ -98,7 +98,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
             .map(term => term.trim())
             .filter(term => term !== '')  // Filter out empty terms
             .map(term => `"${term}"`)
-            .map(term => `"${term}" AROUND(20) "Förderart:" OR "${term}*art*"`)
+            .map(term => `"${term}" AROUND(20) "Förderart:"`)
             .join(' OR ');
         query += query ? ` AND (${foerderartTerms})` : `(${foerderartTerms})`;
     }
@@ -140,6 +140,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
                 .filter(term => term !== '')
                 //.map(term => `"Fördergebiet: ${term}" OR "*ebiet* ${term}"`)
                 .map(term => `"Fördergebiet\\s*:\\s*${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}" OR "*ebiet* ${term}"`)
+                .map(term => `"${term}" AROUND(20) "Fördergebiet:" OR "${term}*ebiet*"`)
                 .join(' OR ');
                 const isGermanState = germanStates.some(state => foerdergebietTerms.includes(state));
         if (isGermanState) {
@@ -154,6 +155,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
                 .map(term => `"${term}"`)
                 .join(' OR ');
                 const isGermanState = germanStates.some(state => foerdergebietTerms.includes(state));
+
         if (isGermanState) {
             query += query ? ` AND (${foerdergebietTerms} OR "bundesweit")` : `(${foerdergebietTerms} OR "bundesweit")`;
         } else {
