@@ -79,9 +79,9 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
                 }
             }
         } else if (percentageMin) {
-            percentageQuery = `"${percentageMin}%" OR "${percentageMin} Prozent"`;
+            percentageQuery = `"${percentageMin}%" OR "${percentageMin} %" OR "${percentageMin} Prozent"`;
         } else if (percentageMax) {
-            percentageQuery = `"${percentageMax}%" OR "${percentageMax} Prozent"`;
+            percentageQuery = `"${percentageMax}%" OR "${percentageMax} %" OR "${percentageMax} Prozent"`;
         }
         query += query ? ` NEAR (${percentageQuery})` : `(${percentageQuery})`;
     }
