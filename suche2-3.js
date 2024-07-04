@@ -121,6 +121,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
                 .map(term => term.trim())
                 .filter(term => term !== '')
                 .map(term => `"${term}"`)
+                .map(term => `"${term}" AROUND(20) "Förderberechtigte"`)
                 .join(' OR ');
         }
         query += query ? ` AND (${foerderberechtigtTerms})` : `(${foerderberechtigtTerms})`;
