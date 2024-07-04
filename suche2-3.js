@@ -292,7 +292,7 @@ function processResults(data, query) {
     "Umwelt- & Naturschutz",
     "Unternehmensfinanzierung",
     "Wohnungsbau & Modernisierung"
-];
+    ];
 
     const searchTermsFoerdergebiet = [
         "Bremen",
