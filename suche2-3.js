@@ -44,7 +44,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     const foerderartbar = document.getElementById('foerderartbar').value.trim();
     const foerderbereichbar = document.getElementById('foerderbereichbar').value.trim();
     const foerderberechtigtbar = document.getElementById('foerderberechtigtbar').value.trim();
-    const foerdergebietbar = "Bremen, bundesweit"; //document.getElementById('foerdergebietbar').value.trim();
+    const foerdergebietbar = "Bremen"; //document.getElementById('foerdergebietbar').value.trim();
     const foerdergeberbar = document.getElementById('foerdergeberbar').value.trim();
 
     let query = '';
@@ -92,7 +92,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         } else if (percentageMax) {
             percentageQuery = `"${percentageMax}%" OR "${percentageMax} Prozent"`;
         }
-        query += query ? ` AND (${percentageQuery})` : `(${percentageQuery})`;
+        query += query ? ` AND ((${sonstiges}) NEAR (${percentageQuery}))` : `(${percentageQuery})`;
     }
     if (foerderartbar) {
         const foerderartTerms = foerderartbar.split(',')
@@ -104,14 +104,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         query += query ? ` AND (${foerderartTerms})` : `(${foerderartTerms})`;
     }
 
-    if (foerderbereichbar) {
-        const foerderbereichTerms = foerderbereichbar.split(',')
-            .map(term => term.trim())
-            .filter(term => term !== '')  // Filter out empty terms
-            .map(term => `"${term}"`)
-            .join(' OR ');
-        query += query ? ` NEAR (${foerderbereichTerms})` : `(${foerderbereichTerms})`;
-    }
+    
 
     if (foerderberechtigtbar) {
         let foerderberechtigtTerms;
@@ -175,6 +168,15 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         query += query ? ` AND (${foerdergeberTerms})` : `(${foerdergeberTerms})`;
     }
 
+    if (foerderbereichbar) {
+        const foerderbereichTerms = foerderbereichbar.split(',')
+            .map(term => term.trim())
+            .filter(term => term !== '')  // Filter out empty terms
+            .map(term => `"${term}"`)
+            .join(' OR ');
+        query += query ? ` NEAR (${foerderbereichTerms})` : `(${foerderbereichTerms})`;
+    }
+            
     return query.trim();
 }
 
