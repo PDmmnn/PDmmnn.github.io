@@ -44,39 +44,6 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     if (sonstiges) {
         query += `(${sonstiges})`;
     }
-      // Amount search
-    if (minAmount && maxAmount) {
-        const min = parseInt(minAmount, 10);
-        const max = parseInt(maxAmount, 10);
-        if (min <= max) {
-            let amountQuery = '';
-            for (let i = min; i <= max; i += 250000) {
-                amountQuery += `${formatAmount(i.toString())}`;
-                if (i + 250000 <= max) {
-                    amountQuery += ' OR ';
-                }
-            }
-            query += query ? ` NEAR (${amountQuery})` : `(${amountQuery})`;
-        }
-    } else if (minAmount) {
-        query += query ? ` NEAR (${formatAmount(minAmount)})` : `(${formatAmount(minAmount)})`;
-    } else if (maxAmount) {
-        query += query ? ` NEAR (${formatAmount(maxAmount)})` : `(${formatAmount(maxAmount)})`;
-    }
-
-    // Percentage search
-    if (percentageMin || percentageMax) {
-        let percentageQuery = '';
-        
-                for (let i = 1; i <= 100; i++) {
-                    percentageQuery += `"${i}" AROUND(0) "%" OR "Prozent"`;
-                    if (i < 100) {
-                    percentageQuery += ' OR ';
-                    }
-                }
-        
-        query += query ? ` NEAR (${percentageQuery})` : `(${percentageQuery})`;
-    }
             
     if (foerderartbar) {
         const foerderartTerms = foerderartbar.split(',')
@@ -146,13 +113,47 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         query += query ? ` AND (${foerdergeberTerms})` : `(${foerdergeberTerms})`;
     }
 
+            // Amount search
+    if (minAmount && maxAmount) {
+        const min = parseInt(minAmount, 10);
+        const max = parseInt(maxAmount, 10);
+        if (min <= max) {
+            let amountQuery = '';
+            for (let i = min; i <= max; i += 250000) {
+                amountQuery += `${formatAmount(i.toString())}`;
+                if (i + 250000 <= max) {
+                    amountQuery += ' OR ';
+                }
+            }
+            query += query ? ` NEAR (${amountQuery})` : `(${amountQuery})`;
+        }
+    } else if (minAmount) {
+        query += query ? ` NEAR (${formatAmount(minAmount)})` : `(${formatAmount(minAmount)})`;
+    } else if (maxAmount) {
+        query += query ? ` NEAR (${formatAmount(maxAmount)})` : `(${formatAmount(maxAmount)})`;
+    }
+
+    // Percentage search
+    if (percentageMin || percentageMax) {
+        let percentageQuery = '';
+        
+                for (let i = 1; i <= 100; i++) {
+                    percentageQuery += `"${i}" AROUND(0) "%" OR "Prozent"`;
+                    if (i < 100) {
+                    percentageQuery += ' OR ';
+                    }
+                }
+        
+        query += query ? ` NEAR (${percentageQuery})` : `(${percentageQuery})`;
+    }
+
     return query.trim();
 }
 
-function formatPercentage(percentageString) {
+//function formatPercentage(percentageString) {
     // Match numbers between 0 and 100 followed by % or Prozent
-    return percentageString.replace(/([0-9]{1,2}) ?[%Prozent]/gi, '$1');
-}
+   // return percentageString.replace(/([0-9]{1,2}) ?[%Prozent]/gi, '$1');
+//}
 
 function search(query) {
         const resultsDiv = document.getElementById('results');
