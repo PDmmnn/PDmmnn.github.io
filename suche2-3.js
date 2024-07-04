@@ -294,8 +294,7 @@ function processResults(data, query) {
     const searchTermsFoerdergebiet = [
         "Bremen",
         "bundesweit",
-        "EU",
-        "Niedersachsen"
+        "EU"
     ];
 
     const searchTermsFoerdergeber = [
