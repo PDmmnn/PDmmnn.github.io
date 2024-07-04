@@ -29,10 +29,10 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
 
     function buildQuery() {
     const sonstiges = document.getElementById('sonstiges').value.trim();
-    const minAmount = document.getElementById('minAmount').value.trim();
-    const maxAmount = document.getElementById('maxAmount').value.trim();
-    const percentageMin = document.getElementById('percentageMin').value.trim();
-    const percentageMax = document.getElementById('percentageMax').value.trim();
+    const minAmount = 1000000; //document.getElementById('minAmount').value.trim();
+    const maxAmount = 50000000; //document.getElementById('maxAmount').value.trim();
+    const percentageMin = 1; //document.getElementById('percentageMin').value.trim();
+    const percentageMax = 100; //document.getElementById('percentageMax').value.trim();
     const foerderartbar = document.getElementById('foerderartbar').value.trim();
     const foerderbereichbar = document.getElementById('foerderbereichbar').value.trim();
     const foerderberechtigtbar = document.getElementById('foerderberechtigtbar').value.trim();
