@@ -36,6 +36,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     const foerderartbar = document.getElementById('foerderartbar').value.trim();
     const foerderbereichbar = document.getElementById('foerderbereichbar').value.trim();
     const foerderberechtigtbar = document.getElementById('foerderberechtigtbar').value.trim();
+    //const foerdergebietbar = "Bremen, bundesweit"; //document.getElementById('foerdergebietbar').value.trim();
     const foerdergeberbar = document.getElementById('foerdergeberbar').value.trim();
 
     let query = '';
@@ -43,56 +44,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     if (sonstiges) {
         query += `(${sonstiges})`;
     }
-            
-    if (foerderartbar) {
-        const foerderartTerms = foerderartbar.split(',')
-            .map(term => term.trim())
-            .filter(term => term !== '')  // Filter out empty terms
-            .map(term => `"${term}"`)
-            .map(term => `"${term}" AROUND(20) "Förderart:"`)
-            .join(' OR ');
-        query += query ? ` AND (${foerderartTerms})` : `(${foerderartTerms})`;
-    }
-
-    if (foerderbereichbar) {
-        const foerderbereichTerms = foerderbereichbar.split(',')
-            .map(term => term.trim())
-            .filter(term => term !== '')  // Filter out empty terms
-            .map(term => `"${term}"`)
-            .join(' OR ');
-        query += query ? ` NEAR (${foerderbereichTerms})` : `(${foerderbereichTerms})`;
-    }
-
-    if (foerderberechtigtbar) {
-        let foerderberechtigtTerms;
-        if (window.location.href.startsWith('https://www.foerderdatenbank.de')) {
-            foerderberechtigtTerms = foerderberechtigtbar.split(',')
-                .map(term => term.trim())
-                .filter(term => term !== '')
-                //.map(term => `"Förderberechtigte: ${term}" OR "${term}*berechtigt*"`)
-                //.map(term => `"Förderberechtigte\\s*:\\s*${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}" OR "*berechtigt* ${term}"`)
-                .map(term => `"${term}" AROUND(20) "Förderberechtigte:" OR "*berechtigt*"`)
-                .join(' OR ');
-        } else {
-            foerderberechtigtTerms = foerderberechtigtbar.split(',')
-                .map(term => term.trim())
-                .filter(term => term !== '')
-                .map(term => `"${term}"`)
-                .join(' OR ');
-        }
-        query += query ? ` AND (${foerderberechtigtTerms})` : `(${foerderberechtigtTerms})`;
-    }
-
-    if (foerdergeberbar) {
-        const foerdergeberTerms = foerdergeberbar.split(',')
-            .map(term => term.trim())
-            .filter(term => term !== '')  // Filter out empty terms
-            .map(term => `"${term}"`)
-            .join(' OR ');
-        query += query ? ` AND (${foerdergeberTerms})` : `(${foerdergeberTerms})`;
-    }
-
-            // Amount search
+      // Amount search
     if (minAmount && maxAmount) {
         const min = parseInt(minAmount, 10);
         const max = parseInt(maxAmount, 10);
@@ -125,14 +77,83 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         
         query += query ? ` NEAR (${percentageQuery})` : `(${percentageQuery})`;
     }
+            
+    if (foerderartbar) {
+        const foerderartTerms = foerderartbar.split(',')
+            .map(term => term.trim())
+            .filter(term => term !== '')  // Filter out empty terms
+            .map(term => `"${term}"`)
+            .map(term => `"${term}" AROUND(20) "Förderart:"`)
+            .join(' OR ');
+        query += query ? ` AND (${foerderartTerms})` : `(${foerderartTerms})`;
+    }
+
+    if (foerderbereichbar) {
+        const foerderbereichTerms = foerderbereichbar.split(',')
+            .map(term => term.trim())
+            .filter(term => term !== '')  // Filter out empty terms
+            .map(term => `"${term}"`)
+            .join(' OR ');
+        query += query ? ` NEAR (${foerderbereichTerms})` : `(${foerderbereichTerms})`;
+    }
+
+    if (foerderberechtigtbar) {
+        let foerderberechtigtTerms;
+        if (window.location.href.startsWith('https://www.foerderdatenbank.de')) {
+            foerderberechtigtTerms = foerderberechtigtbar.split(',')
+                .map(term => term.trim())
+                .filter(term => term !== '')
+                //.map(term => `"Förderberechtigte: ${term}" OR "${term}*berechtigt*"`)
+                .map(term => `"Förderberechtigte\\s*:\\s*${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}" OR "*berechtigt* ${term}"`)
+                .map(term => `"${term}" AROUND(20) "Förderberechtigte:" OR "*berechtigt*"`)
+                .join(' OR ');
+        } else {
+            foerderberechtigtTerms = foerderberechtigtbar.split(',')
+                .map(term => term.trim())
+                .filter(term => term !== '')
+                .map(term => `"${term}"`)
+                .join(' OR ');
+        }
+        query += query ? ` AND (${foerderberechtigtTerms})` : `(${foerderberechtigtTerms})`;
+    }
+
+            /*
+    if (foerdergebietbar) {
+        let foerdergebietTerms;
+        if (window.location.href.startsWith('https://www.foerderdatenbank.de')) {
+            foerdergebietTerms = foerdergebietbar.split(',')
+                .map(term => term.trim())
+                .filter(term => term !== '')
+                //.map(term => `"Fördergebiet: ${term}" OR "*ebiet* ${term}"`)
+                .map(term => `"Fördergebiet\\s*:\\s*${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}" OR "*ebiet* ${term}"`)
+                .map(term => `"${term}" AROUND(20) "Fördergebiet:"`)
+                .join(' OR ');
+        } else {
+            foerdergebietTerms = foerdergebietbar.split(',')
+                .map(term => term.trim())
+                .filter(term => term !== '')
+                .map(term => `"${term}"`)
+                .join(' OR ');
+        }
+        query += query ? ` AND (${foerdergebietTerms})` : `(${foerdergebietTerms})`;
+    }
+*/
+    if (foerdergeberbar) {
+        const foerdergeberTerms = foerdergeberbar.split(',')
+            .map(term => term.trim())
+            .filter(term => term !== '')  // Filter out empty terms
+            .map(term => `"${term}"`)
+            .join(' OR ');
+        query += query ? ` AND (${foerdergeberTerms})` : `(${foerdergeberTerms})`;
+    }
 
     return query.trim();
 }
 
-//function formatPercentage(percentageString) {
+function formatPercentage(percentageString) {
     // Match numbers between 0 and 100 followed by % or Prozent
-   // return percentageString.replace(/([0-9]{1,2}) ?[%Prozent]/gi, '$1');
-//}
+    return percentageString.replace(/([0-9]{1,2}) ?[%Prozent]/gi, '$1');
+}
 
 function search(query) {
         const resultsDiv = document.getElementById('results');
@@ -195,6 +216,7 @@ function processResults(data, query) {
         "Beteiligung",
         "Bürgschaft",
         "Darlehen",
+        "Förderung",
         "Garantie",
         "Investitionszuschuss",
         "Projektfinanzierung",
