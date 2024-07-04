@@ -28,15 +28,23 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
 }
 
     function buildQuery() {
+    const germanStates = [
+        "Baden-Württemberg", "Bayern", "Berlin", "Brandenburg", "Bremen",
+        "Hamburg", "Hessen", "Mecklenburg-Vorpommern", "Niedersachsen", "Nordrhein-Westfalen",
+        "Rheinland-Pfalz", "Saarland", "Sachsen", "Sachsen-Anhalt", "Schleswig-Holstein", "Thüringen",
+            "Baden-Württemberg,", "Bayern,", "Berlin,", "Brandenburg,", "Bremen,",
+        "Hamburg,", "Hessen,", "Mecklenburg-Vorpommern,", "Niedersachsen,", "Nordrhein-Westfalen,",
+        "Rheinland-Pfalz,", "Saarland,", "Sachsen,", "Sachsen-Anhalt,", "Schleswig-Holstein,", "Thüringen,"
+    ];
     const sonstiges = document.getElementById('sonstiges').value.trim();
-    const minAmount = 1000000; //document.getElementById('minAmount').value.trim();
-    const maxAmount = 5000000; //document.getElementById('maxAmount').value.trim();
-    const percentageMin = 1; //document.getElementById('percentageMin').value.trim();
-    const percentageMax = 100; //document.getElementById('percentageMax').value.trim();
+    const minAmount = document.getElementById('minAmount').value.trim();
+    const maxAmount = document.getElementById('maxAmount').value.trim();
+    const percentageMin = document.getElementById('percentageMin').value.trim();
+    const percentageMax = document.getElementById('percentageMax').value.trim();
     const foerderartbar = document.getElementById('foerderartbar').value.trim();
     const foerderbereichbar = document.getElementById('foerderbereichbar').value.trim();
     const foerderberechtigtbar = document.getElementById('foerderberechtigtbar').value.trim();
-    //const foerdergebietbar = "Bremen, bundesweit"; //document.getElementById('foerdergebietbar').value.trim();
+    const foerdergebietbar = "Bremen, bundesweit"; //document.getElementById('foerdergebietbar').value.trim();
     const foerdergeberbar = document.getElementById('foerdergeberbar').value.trim();
 
     let query = '';
@@ -50,34 +58,41 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         const max = parseInt(maxAmount, 10);
         if (min <= max) {
             let amountQuery = '';
-            for (let i = min; i <= max; i += 250000) {
+            for (let i = min; i <= max; i += 10000) {
                 amountQuery += `${formatAmount(i.toString())}`;
-                if (i + 250000 <= max) {
+                if (i + 10000 <= max) {
                     amountQuery += ' OR ';
                 }
             }
-            query += query ? ` NEAR (${amountQuery})` : `(${amountQuery})`;
+            query += query ? ` AND (${amountQuery})` : `(${amountQuery})`;
         }
     } else if (minAmount) {
-        query += query ? ` NEAR (${formatAmount(minAmount)})` : `(${formatAmount(minAmount)})`;
+        query += query ? ` AND (${formatAmount(minAmount)})` : `(${formatAmount(minAmount)})`;
     } else if (maxAmount) {
-        query += query ? ` NEAR (${formatAmount(maxAmount)})` : `(${formatAmount(maxAmount)})`;
+        query += query ? ` AND (${formatAmount(maxAmount)})` : `(${formatAmount(maxAmount)})`;
     }
 
     // Percentage search
     if (percentageMin || percentageMax) {
         let percentageQuery = '';
-        
-                for (let i = 1; i <= 100; i++) {
-                    percentageQuery += `"${i}" AROUND(0) "%" OR "Prozent"`;
-                    if (i < 100) {
-                    percentageQuery += ' OR ';
+        if (percentageMin && percentageMax) {
+            const min = parseInt(percentageMin, 10);
+            const max = parseInt(percentageMax, 10);
+            if (min <= max) {
+                for (let i = min; i <= max; i++) {
+                    percentageQuery += `"${i}%" OR "${i} Prozent"`;
+                    if (i < max) {
+                        percentageQuery += ' OR ';
                     }
                 }
-        
-        query += query ? ` NEAR (${percentageQuery})` : `(${percentageQuery})`;
+            }
+        } else if (percentageMin) {
+            percentageQuery = `"${percentageMin}%" OR "${percentageMin} Prozent"`;
+        } else if (percentageMax) {
+            percentageQuery = `"${percentageMax}%" OR "${percentageMax} Prozent"`;
+        }
+        query += query ? ` AND (${percentageQuery})` : `(${percentageQuery})`;
     }
-            
     if (foerderartbar) {
         const foerderartTerms = foerderartbar.split(',')
             .map(term => term.trim())
@@ -105,7 +120,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
                 .filter(term => term !== '')
                 //.map(term => `"Förderberechtigte: ${term}" OR "${term}*berechtigt*"`)
                 .map(term => `"Förderberechtigte\\s*:\\s*${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}" OR "*berechtigt* ${term}"`)
-                .map(term => `"${term}" AROUND(20) "Förderberechtigte:" OR "*berechtigt*"`)
+                .map(term => `"${term}" AROUND(20) "Förderberechtigte:" OR "${term}*berechtigt*"`)
                 .join(' OR ');
         } else {
             foerderberechtigtTerms = foerderberechtigtbar.split(',')
@@ -117,7 +132,6 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         query += query ? ` AND (${foerderberechtigtTerms})` : `(${foerderberechtigtTerms})`;
     }
 
-            /*
     if (foerdergebietbar) {
         let foerdergebietTerms;
         if (window.location.href.startsWith('https://www.foerderdatenbank.de')) {
@@ -126,18 +140,31 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
                 .filter(term => term !== '')
                 //.map(term => `"Fördergebiet: ${term}" OR "*ebiet* ${term}"`)
                 .map(term => `"Fördergebiet\\s*:\\s*${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}" OR "*ebiet* ${term}"`)
-                .map(term => `"${term}" AROUND(20) "Fördergebiet:"`)
+                .map(term => `"${term}" AROUND(20) "Fördergebiet:" OR "${term}*ebiet*"`)
                 .join(' OR ');
+                const isGermanState = germanStates.some(state => foerdergebietTerms.includes(state));
+        if (isGermanState) {
+            query += query ? ` AND (${foerdergebietTerms} OR "bundesweit")` : `(${foerdergebietTerms} OR "bundesweit")`;
+        } else {
+            query += query ? ` AND (${foerdergebietTerms})` : `(${foerdergebietTerms})`;
+        }
         } else {
             foerdergebietTerms = foerdergebietbar.split(',')
                 .map(term => term.trim())
                 .filter(term => term !== '')
                 .map(term => `"${term}"`)
                 .join(' OR ');
+                const isGermanState = germanStates.some(state => foerdergebietTerms.includes(state));
+
+        if (isGermanState) {
+            query += query ? ` AND (${foerdergebietTerms} OR "bundesweit")` : `(${foerdergebietTerms} OR "bundesweit")`;
+        } else {
+            query += query ? ` AND (${foerdergebietTerms})` : `(${foerdergebietTerms})`;
+        }
         }
         query += query ? ` AND (${foerdergebietTerms})` : `(${foerdergebietTerms})`;
     }
-*/
+
     if (foerdergeberbar) {
         const foerdergeberTerms = foerdergeberbar.split(',')
             .map(term => term.trim())
@@ -156,9 +183,6 @@ function formatPercentage(percentageString) {
 }
 
 function search(query) {
-        const resultsDiv = document.getElementById('results');
-        resultsDiv.innerHTML = 'Suche läuft...';
-        
         const apiKey = 'AIzaSyDor3KeS2NUadNOejG1-UsJiuksdgA5wZs'; // Replace with your actual API key
         const cx = 'c186732db6bed4a3f'; // Replace with your actual Custom Search Engine ID
         const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${encodeURIComponent(query)}`;
@@ -192,7 +216,7 @@ function processResults(data, query) {
 
     function displayResults(data) {
         const resultsDiv = document.getElementById('results');
-        resultsDiv.innerHTML = ''; // Clear previous results ("Suche läuft...")
+        resultsDiv.innerHTML = '';
 
         if (data.items) {
             data.items.forEach(item => {
@@ -208,7 +232,7 @@ function processResults(data, query) {
                 resultsDiv.appendChild(resultItem);
             });
         } else {
-            resultsDiv.innerHTML = 'Keine Ergebnisse Gefunden';
+            resultsDiv.innerHTML = 'No results found';
         }
     }
 // Search terms for each search bar
@@ -262,6 +286,13 @@ function processResults(data, query) {
     "Unternehmensfinanzierung",
     "Wohnungsbau & Modernisierung"
 ];
+
+    const searchTermsFoerdergebiet = [
+        "Bremen",
+        "bundesweit",
+        "EU",
+        "Niedersachsen"
+    ];
 
     const searchTermsFoerdergeber = [
         "Bund",
