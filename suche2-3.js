@@ -157,7 +157,6 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
             query += query ? ` AND (${foerdergebietTerms})` : `(${foerdergebietTerms})`;
         }
         }
-        query += query ? ` AND (${foerdergebietTerms})` : `(${foerdergebietTerms})`;
     }
 
     if (foerdergeberbar) {
