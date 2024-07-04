@@ -37,8 +37,8 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         "Rheinland-Pfalz,", "Saarland,", "Sachsen,", "Sachsen-Anhalt,", "Schleswig-Holstein,", "Thüringen,"
     ];
     const sonstiges = document.getElementById('sonstiges').value.trim();
-    //const minAmount = document.getElementById('minAmount').value.trim();
-    //const maxAmount = document.getElementById('maxAmount').value.trim();
+    const minAmount = 1000000; // document.getElementById('minAmount').value.trim();
+    const maxAmount = 10000000; // document.getElementById('maxAmount').value.trim();
     const percentageMin = 1; // document.getElementById('percentageMin').value.trim();
     const percentageMax = 100; // document.getElementById('percentageMax').value.trim();
     const foerderartbar = document.getElementById('foerderartbar').value.trim();
@@ -53,25 +53,24 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         query += `(${sonstiges})`;
     }
       // Amount search
-            /*
     if (minAmount && maxAmount) {
         const min = parseInt(minAmount, 10);
         const max = parseInt(maxAmount, 10);
         if (min <= max) {
             let amountQuery = '';
-            for (let i = min; i <= max; i += 10000) {
+            for (let i = min; i <= max; i += 100000) {
                 amountQuery += `${formatAmount(i.toString())}`;
-                if (i + 10000 <= max) {
+                if (i + 100000 <= max) {
                     amountQuery += ' OR ';
                 }
             }
-            query += query ? ` AND (${amountQuery})` : `(${amountQuery})`;
+            query += query ? ` AND ((${sonstiges}) NEAR (${amountQuery}))` : `(${amountQuery})`;
         }
     } else if (minAmount) {
         query += query ? ` AND (${formatAmount(minAmount)})` : `(${formatAmount(minAmount)})`;
     } else if (maxAmount) {
         query += query ? ` AND (${formatAmount(maxAmount)})` : `(${formatAmount(maxAmount)})`;
-    } */
+    } 
 
     // Percentage search
     if (percentageMin || percentageMax) {
