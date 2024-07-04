@@ -38,7 +38,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     ];
     const sonstiges = document.getElementById('sonstiges').value.trim();
     const minAmount = 1000000; // document.getElementById('minAmount').value.trim();
-    const maxAmount = 10000000; // document.getElementById('maxAmount').value.trim();
+    const maxAmount = 5000000; // document.getElementById('maxAmount').value.trim();
     const percentageMin = 1; // document.getElementById('percentageMin').value.trim();
     const percentageMax = 100; // document.getElementById('percentageMax').value.trim();
     const foerderartbar = document.getElementById('foerderartbar').value.trim();
@@ -52,25 +52,6 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     if (sonstiges) {
         query += `(${sonstiges})`;
     }
-      // Amount search
-    if (minAmount && maxAmount) {
-        const min = parseInt(minAmount, 10);
-        const max = parseInt(maxAmount, 10);
-        if (min <= max) {
-            let amountQuery = '';
-            for (let i = min; i <= max; i += 100000) {
-                amountQuery += `${formatAmount(i.toString())}`;
-                if (i + 100000 <= max) {
-                    amountQuery += ' OR ';
-                }
-            }
-            query += query ? ` AND ((${sonstiges}) NEAR (${amountQuery}))` : `(${amountQuery})`;
-        }
-    } else if (minAmount) {
-        query += query ? ` AND (${formatAmount(minAmount)})` : `(${formatAmount(minAmount)})`;
-    } else if (maxAmount) {
-        query += query ? ` AND (${formatAmount(maxAmount)})` : `(${formatAmount(maxAmount)})`;
-    } 
 
     // Percentage search
     if (percentageMin || percentageMax) {
@@ -175,6 +156,25 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
             .join(' OR ');
         query += query ? ` NEAR (${foerderbereichTerms})` : `(${foerderbereichTerms})`;
     }
+            // Amount search
+    if (minAmount && maxAmount) {
+        const min = parseInt(minAmount, 10);
+        const max = parseInt(maxAmount, 10);
+        if (min <= max) {
+            let amountQuery = '';
+            for (let i = min; i <= max; i += 100000) {
+                amountQuery += `${formatAmount(i.toString())}`;
+                if (i + 100000 <= max) {
+                    amountQuery += ' OR ';
+                }
+            }
+            query += query ? ` NEAR (${amountQuery})` : `(${amountQuery})`;
+        }
+    } else if (minAmount) {
+        query += query ? ` AND (${formatAmount(minAmount)})` : `(${formatAmount(minAmount)})`;
+    } else if (maxAmount) {
+        query += query ? ` AND (${formatAmount(maxAmount)})` : `(${formatAmount(maxAmount)})`;
+    } 
             
     return query.trim();
 }
