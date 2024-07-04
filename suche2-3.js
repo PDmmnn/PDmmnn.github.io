@@ -168,7 +168,8 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
                     amountQuery += ' OR ';
                 }
             }
-            query += query ? ` NEAR (("Mio" OR "Million" OR "Mio.") NEAR ("Euro" OR "EUR"))`; // ` NEAR (${amountQuery})` : `(${amountQuery})`;
+            amountQuery = '("Mio" OR "Million" OR "Mio.") NEAR ("Euro" OR "EUR")';
+            query += query ? ` NEAR (${amountQuery})` : `(${amountQuery})`;
         }
     } else if (minAmount) {
         query += query ? ` AND (${formatAmount(minAmount)})` : `(${formatAmount(minAmount)})`;
