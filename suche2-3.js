@@ -50,9 +50,9 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         const max = parseInt(maxAmount, 10);
         if (min <= max) {
             let amountQuery = '';
-            for (let i = min; i <= max; i += 10000) {
+            for (let i = min; i <= max; i += 250000) {
                 amountQuery += `${formatAmount(i.toString())}`;
-                if (i + 10000 <= max) {
+                if (i + 250000 <= max) {
                     amountQuery += ' OR ';
                 }
             }
