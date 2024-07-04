@@ -37,8 +37,8 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         "Rheinland-Pfalz,", "Saarland,", "Sachsen,", "Sachsen-Anhalt,", "Schleswig-Holstein,", "Thüringen,"
     ];
     const sonstiges = document.getElementById('sonstiges').value.trim();
-    //const minAmount = 1000000; // document.getElementById('minAmount').value.trim();
-    //const maxAmount = 5000000; // document.getElementById('maxAmount').value.trim();
+    const minAmount = 1000000; // document.getElementById('minAmount').value.trim();
+    const maxAmount = 5000000; // document.getElementById('maxAmount').value.trim();
     const percentageMin = 1; // document.getElementById('percentageMin').value.trim();
     const percentageMax = 100; // document.getElementById('percentageMax').value.trim();
     const foerderartbar = document.getElementById('foerderartbar').value.trim();
@@ -157,7 +157,6 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         query += query ? ` NEAR (${foerderbereichTerms})` : `(${foerderbereichTerms})`;
     }
             // Amount search
-            /*
     if (minAmount && maxAmount) {
         const min = parseInt(minAmount, 10);
         const max = parseInt(maxAmount, 10);
@@ -169,15 +168,15 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
                     amountQuery += ' OR ';
                 }
             }
-            query += query ? ` NEAR (${amountQuery})` : `(${amountQuery})`;
+            query += query ? ` NEAR (("Mio" OR "Million" OR "Mio.") NEAR ("Euro" OR "EUR"))`; // ` NEAR (${amountQuery})` : `(${amountQuery})`;
         }
     } else if (minAmount) {
         query += query ? ` AND (${formatAmount(minAmount)})` : `(${formatAmount(minAmount)})`;
     } else if (maxAmount) {
         query += query ? ` AND (${formatAmount(maxAmount)})` : `(${formatAmount(maxAmount)})`;
-    } */
+    }
 
-    query += query ? ` NEAR (("Mio" OR "Million" OR "Mio.") NEAR ("Euro" OR "EUR"))`;
+    //query += query ? ` NEAR (("Mio" OR "Million" OR "Mio.") NEAR ("Euro" OR "EUR"))`;
             
     return query.trim();
 }
