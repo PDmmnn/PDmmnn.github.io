@@ -104,7 +104,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
                 .map(term => term.trim())
                 .filter(term => term !== '')
                 //.map(term => `"Förderberechtigte: ${term}" OR "${term}*berechtigt*"`)
-                .map(term => `"Förderberechtigte\\s*:\\s*${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}" OR "*berechtigt* ${term}"`)
+                //.map(term => `"Förderberechtigte\\s*:\\s*${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}" OR "*berechtigt* ${term}"`)
                 .map(term => `"${term}" AROUND(20) "Förderberechtigte:" OR "*berechtigt*"`)
                 .join(' OR ');
         } else {
@@ -124,7 +124,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
                 .map(term => term.trim())
                 .filter(term => term !== '')
                 //.map(term => `"Fördergebiet: ${term}" OR "*ebiet* ${term}"`)
-                .map(term => `"Fördergebiet\\s*:\\s*${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}" OR "*ebiet* ${term}"`)
+                //.map(term => `"Fördergebiet\\s*:\\s*${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}" OR "*ebiet* ${term}"`)
                 .map(term => `"${term}" AROUND(20) "Fördergebiet:"`)
                 .join(' OR ');
         } else {
