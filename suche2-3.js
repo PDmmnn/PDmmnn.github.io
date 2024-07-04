@@ -178,10 +178,10 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     return query.trim();
 }
 
-function formatPercentage(percentageString) {
+/*function formatPercentage(percentageString) {
     // Match numbers between 0 and 100 followed by % or Prozent
     return percentageString.replace(/([0-9]{1,2}) ?[%Prozent]/gi, '$1');
-}
+}*/
 
 function search(query) {
         const resultsDiv = document.getElementById('results');
