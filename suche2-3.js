@@ -37,10 +37,10 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         "Rheinland-Pfalz,", "Saarland,", "Sachsen,", "Sachsen-Anhalt,", "Schleswig-Holstein,", "Thüringen,"
     ];
     const sonstiges = document.getElementById('sonstiges').value.trim();
-    const minAmount = document.getElementById('minAmount').value.trim();
-    const maxAmount = document.getElementById('maxAmount').value.trim();
-    const percentageMin = document.getElementById('percentageMin').value.trim();
-    const percentageMax = document.getElementById('percentageMax').value.trim();
+    //const minAmount = document.getElementById('minAmount').value.trim();
+    //const maxAmount = document.getElementById('maxAmount').value.trim();
+    const percentageMin = 1; // document.getElementById('percentageMin').value.trim();
+    const percentageMax = 100; // document.getElementById('percentageMax').value.trim();
     const foerderartbar = document.getElementById('foerderartbar').value.trim();
     const foerderbereichbar = document.getElementById('foerderbereichbar').value.trim();
     const foerderberechtigtbar = document.getElementById('foerderberechtigtbar').value.trim();
@@ -53,6 +53,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         query += `(${sonstiges})`;
     }
       // Amount search
+            /*
     if (minAmount && maxAmount) {
         const min = parseInt(minAmount, 10);
         const max = parseInt(maxAmount, 10);
@@ -70,7 +71,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         query += query ? ` AND (${formatAmount(minAmount)})` : `(${formatAmount(minAmount)})`;
     } else if (maxAmount) {
         query += query ? ` AND (${formatAmount(maxAmount)})` : `(${formatAmount(maxAmount)})`;
-    }
+    } */
 
     // Percentage search
     if (percentageMin || percentageMax) {
@@ -183,6 +184,9 @@ function formatPercentage(percentageString) {
 }
 
 function search(query) {
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = 'Ergebnisse werden gesucht';
+        
         const apiKey = 'AIzaSyDor3KeS2NUadNOejG1-UsJiuksdgA5wZs'; // Replace with your actual API key
         const cx = 'c186732db6bed4a3f'; // Replace with your actual Custom Search Engine ID
         const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${encodeURIComponent(query)}`;
@@ -232,7 +236,7 @@ function processResults(data, query) {
                 resultsDiv.appendChild(resultItem);
             });
         } else {
-            resultsDiv.innerHTML = 'No results found';
+            resultsDiv.innerHTML = 'Keine Ergebnisse gefunden';
         }
     }
 // Search terms for each search bar
