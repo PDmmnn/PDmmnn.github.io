@@ -13,15 +13,15 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     const formats = [];
 
     // Format as plain number
-    formats.push(amount.toLocaleString('de-DE')); // German locale for number formatting (1.000.000)
+    // formats.push(amount.toLocaleString('de-DE')); // German locale for number formatting (1.000.000)
 
     // Format as millions
     const million = amount / 1000000;
     if (million >= 1) {
         formats.push(`${million.toFixed(1)} Mio`);
-        formats.push(`${million.toFixed(1)} Millionen`);
+        formats.push(`${million.toFixed(1)} Million`);
         formats.push(`${million.toFixed(1).replace('.', ',')} Mio`);
-        formats.push(`${million.toFixed(1).replace('.', ',')} Millionen`);
+        formats.push(`${million.toFixed(1).replace('.', ',')} Million`);
     }
 
     return formats.join(' OR ');
