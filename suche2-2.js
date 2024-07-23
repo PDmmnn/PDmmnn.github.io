@@ -10,6 +10,8 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         return amountString;
     }
 
+// Formatierung der Zahleneingaben für Förderhöhe von möglichen Schreibweisen im Formular zu möglichen Schreibweisen auf Websites
+            
     const formats = [];
 
     // Format as plain number
