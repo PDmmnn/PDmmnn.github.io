@@ -4,9 +4,6 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         search(query);
     });
 
-    return formats.join(' OR ');
-}
-
     function buildQuery() {
             // Diese und die in "fördergebietbar" folgenden germanStates-Elemente sind weitesgehend redundant und nur bei Wiederinführung von Fördergebiet als Suchkriterium relevant.
     const germanStates = [
