@@ -4,27 +4,11 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         search(query);
     });
 
-    function formatAmount(amountString) {
-    const amount = parseFloat(amountString.replace(/,/g, ''));
-    if (isNaN(amount)) {
-        return amountString;
-    }
-
-    const formats = [];
-
-    // Format as millions
-    const million = amount / 1000000;
-    if (million >= 1) {
-        formats.push(`${million.toFixed(1)} Mio`);
-        formats.push(`${million.toFixed(1)} Million`);
-        formats.push(`${million.toFixed(1).replace('.', ',')} Mio`);
-        formats.push(`${million.toFixed(1).replace('.', ',')} Million`);
-    }
-
     return formats.join(' OR ');
 }
 
     function buildQuery() {
+            // Diese und die in "fördergebietbar" folgenden germanStates-Elemente sind weitesgehend redundant und nur bei Wiederinführung von Fördergebiet als Suchkriterium relevant.
     const germanStates = [
         "Baden-Württemberg", "Bayern", "Berlin", "Brandenburg", "Bremen",
         "Hamburg", "Hessen", "Mecklenburg-Vorpommern", "Niedersachsen", "Nordrhein-Westfalen",
@@ -50,7 +34,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         query += `(${sonstiges})`;
     }
 
-    // Percentage search
+    // Percentage search (Förderanteil)
     if (percentageMin || percentageMax) {
         let percentageQuery = '';
         if (percentageMin && percentageMax) {
@@ -153,7 +137,7 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
             .join(' OR ');
         query += query ? ` NEAR (${foerderbereichTerms})` : `(${foerderbereichTerms})`;
     }
-            // Amount search
+            // Amount search (Förderhöhe)
     if (minAmount && maxAmount) {
         const min = parseInt(minAmount, 10);
         const max = parseInt(maxAmount, 10);
@@ -173,17 +157,11 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
     } else if (maxAmount) {
         query += query ? ` AND (${formatAmount(maxAmount)})` : `(${formatAmount(maxAmount)})`;
     }
-
-    //query += query ? ` NEAR (("Mio" OR "Million" OR "Mio.") NEAR ("Euro" OR "EUR"))`;
             
     return query.trim();
 }
 
-/*function formatPercentage(percentageString) {
-    // Match numbers between 0 and 100 followed by % or Prozent
-    return percentageString.replace(/([0-9]{1,2}) ?[%Prozent]/gi, '$1');
-}*/
-
+// Es folgt die eigentliche Suchfunktion, die die Suchanfrage/SearchQuery mit den angegebenen, hier noch nicht verschlüsselten, Zugangsdaten an die API von Google Programmable Search Engine stellt.
 function search(query) {
         const resultsDiv = document.getElementById('results');
         resultsDiv.innerHTML = 'Ergebnisse werden gesucht ...';
@@ -198,6 +176,7 @@ function search(query) {
             .catch(error => console.error('Error:', error));
     }
 
+// Verarbeitung der Suchergebnisse
 function processResults(data, query) {
             if (data.items) {
                 const searchTerms = query.split(' AND ').flatMap(term => term.replace(/"/g, '').split(' OR ').map(t => t.trim().toLowerCase()));
@@ -218,7 +197,7 @@ function processResults(data, query) {
             }
         }
 
-
+// Darstellung
     function displayResults(data) {
         const resultsDiv = document.getElementById('results');
         resultsDiv.innerHTML = '';
@@ -240,7 +219,7 @@ function processResults(data, query) {
             resultsDiv.innerHTML = 'Keine Ergebnisse gefunden';
         }
     }
-// Search terms for each search bar
+// Suchbegriffe für die Eingabezeilen im Formular
     const searchTermsFoerderart = [
         "Beteiligung",
         "Bürgschaft",
@@ -304,7 +283,7 @@ function processResults(data, query) {
         "Land"
     ];
 
-    // Initialize search bars with autocomplete functionality
+    // Initialisierung mit Autoverfollständigung
     initializeSearchBar('foerderartbar', 'dropdown-foerderart', searchTermsFoerderart);
     //initializeSearchBar('foerdergebietbar', 'dropdown-foerdergebiet', searchTermsFoerdergebiet);
     initializeSearchBar('foerderbereichbar', 'dropdown-foerderbereich', searchTermsFoerderbereich);
@@ -343,7 +322,7 @@ function processResults(data, query) {
             dropdown.style.display = filteredTerms.length ? 'block' : 'none';
         }
 
-        // Hide dropdown if clicked outside
+        // Dropdown-Menü-Handling
         document.addEventListener('click', function(event) {
             if (!searchBar.contains(event.target) && !dropdown.contains(event.target)) {
                 dropdown.style.display = 'none';
