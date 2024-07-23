@@ -12,9 +12,6 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
 
     const formats = [];
 
-    // Format as plain number
-    // formats.push(amount.toLocaleString('de-DE')); // German locale for number formatting (1.000.000)
-
     // Format as millions
     const million = amount / 1000000;
     if (million >= 1) {
