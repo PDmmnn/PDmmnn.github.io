@@ -4,6 +4,26 @@ document.getElementById('foerderalertForm').addEventListener('submit', function(
         search(query);
     });
 
+function formatAmount(amountString) {
+    const amount = parseFloat(amountString.replace(/,/g, ''));
+    if (isNaN(amount)) {
+        return amountString;
+    }
+
+    const formats = [];
+
+    // Format as millions
+    const million = amount / 1000000;
+    if (million >= 1) {
+        formats.push(`${million.toFixed(1)} Mio`);
+        formats.push(`${million.toFixed(1)} Million`);
+        formats.push(`${million.toFixed(1).replace('.', ',')} Mio`);
+        formats.push(`${million.toFixed(1).replace('.', ',')} Million`);
+    }
+
+    return formats.join(' OR ');
+}
+
     function buildQuery() {
             // Diese und die in "fördergebietbar" folgenden germanStates-Elemente sind weitesgehend redundant und nur bei Wiederinführung von Fördergebiet als Suchkriterium relevant.
     const germanStates = [
