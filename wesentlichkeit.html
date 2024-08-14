@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wesentlichkeitsanalyse Koordinatensystem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #chart-container {
+            position: relative;
+            width: 600px;
+            height: 600px;
+            border: 1px solid black;
+            margin-bottom: 20px;
+        }
+        #chart {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .axis-label {
+            position: absolute;
+            font-weight: bold;
+        }
+        .x-label {
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .y-label {
+            top: 50%;
+            left: -70px;
+            transform: translateY(-50%) rotate(-90deg);
+        }
+        #form-container {
+            margin-bottom: 20px;
+        }
+        #download-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .switch-container {
+            margin-top: 10px;
+        }
+        .position-label {
+            position: absolute;
+            font-size: 14px;
+            color: red;
+            font-weight: bold;
+        }
+        .x-position {
+            top: -20px;
+            transform: translateX(-50%);
+        }
+        .y-position {
+            top: -20px;
+            right: 0;
+        }
+        #legend-container {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Wesentlichkeitsanalyse Koordinatensystem</h1>
+
+<div id="chart-container">
+    <canvas id="chart"></canvas>
+    <div class="axis-label x-label">Materielle Wesentlichkeit</div>
+    <div class="axis-label y-label">Finanzielle Wesentlichkeit</div>
+    <div class="position-label x-position" id="x-position"></div>
+    <div class="position-label y-position" id="y-position"></div>
+</div>
+
+<div id="form-container">
+    <h2>Werte eingeben</h2>
+    <div id="inputs"></div>
+    <button onclick="addInput()">Neues Thema hinzufügen</button>
+
+    <div class="switch-container">
+        <label>
+            <input type="checkbox" id="toggle-lines" checked>
+            Rote Linien anzeigen
+        </label>
+    </div>
+    <div class="switch-container">
+        <label>
+            <input type="checkbox" id="toggle-drag">
+            Rote Linien verschieben
+        </label>
+    </div>
+</div>
+
+<div id="legend-container"></div>
+
+<button id="download-btn" onclick="downloadChart()">Diagramm als PNG herunterladen</button>
+
+<script>
+    const chart = document.getElementById('chart');
+    const ctx = chart.getContext('2d');
+    const inputsDiv = document.getElementById('inputs');
+    const legendContainer = document.getElementById('legend-container');
+    const xPositionLabel = document.getElementById('x-position');
+    const yPositionLabel = document.getElementById('y-position');
+    const toggleLinesCheckbox = document.getElementById('toggle-lines');
+    const toggleDragCheckbox = document.getElementById('toggle-drag');
+    let data = [];
+    let xMean = 3;
+    let yMean = 3;
+    let draggingX = false;
+    let draggingY = false;
+    let hovering = false;
+
+    chart.width = 600;
+    chart.height = 600;
+
+    toggleLinesCheckbox.addEventListener('change', drawChart);
+    toggleDragCheckbox.addEventListener('change', () => {
+        draggingX = false;
+        draggingY = false;
+    });
+
+    function addInput() {
+        const index = data.length;
+        const color = getRandomColor();
+        data.push({ label: '', x: 0, y: 0, size: 100, color: color });
+
+        const container = document.createElement('div');
+        container.innerHTML = `
+            <label>Thema ${index + 1}:
+                <input type="text" placeholder="Bezeichnung" onchange="updateData(${index}, 'label', this.value)">
+                X: <input type="number" step="0.1" min="1" max="6" onchange="updateData(${index}, 'x', this.value)">
+                Y: <input type="number" step="0.1" min="1" max="6" onchange="updateData(${index}, 'y', this.value)">
+                Größe: <input type="number" value="100" onchange="updateData(${index}, 'size', this.value)">
+            </label>
+        `;
+        inputsDiv.appendChild(container);
+
+        // Legende aktualisieren
+        const legendItem = document.createElement('div');
+        legendItem.style.color = color;
+        legendItem.textContent = `Thema ${index + 1}: `;
+        legendContainer.appendChild(legendItem);
+    }
+
+    function updateData(index, key, value) {
+        data[index][key] = parseFloat(value) || value;
+        drawChart();
+    }
+
+    function getRandomColor() {
+        return '#' + Math.floor(Math.random() * 16777215).toString(16);
+    }
+
+    function drawChart() {
+        ctx.clearRect(0, 0, chart.width, chart.height);
+
+        // Zeichne Gitternetz und Achsen-Skalen (1 bis 6 ohne die 6)
+        ctx.strokeStyle = '#ddd';
+        ctx.lineWidth = 1;
+        for (let i = 1; i <= 5; i++) {
+            const xPos = i / 6 * chart.width;
+            const yPos = i / 6 * chart.height;
+
+            ctx.beginPath();
+            ctx.moveTo(xPos, 0);
+            ctx.lineTo(xPos, chart.height);
+            ctx.moveTo(0, yPos);
+            ctx.lineTo(chart.width, yPos);
+            ctx.stroke();
+
+            ctx.fillStyle = 'black';
+            ctx.fillText(i, xPos - 5, chart.height - 5);
+            ctx.fillText(i, 5, chart.height - yPos + 5);
+        }
+
+        if (toggleLinesCheckbox.checked) {
+            // Zeichne Durchschnittslinien
+            ctx.strokeStyle = 'red';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(xMean / 6 * chart.width, 0);
+            ctx.lineTo(xMean / 6 * chart.width, chart.height);
+            ctx.moveTo(0, chart.height - yMean / 6 * chart.height);
+            ctx.lineTo(chart.width, chart.height - yMean / 6 * chart.height);
+            ctx.stroke();
+
+            // Aktualisiere Positionsanzeigen
+            xPositionLabel.textContent = xMean.toFixed(2);
+            yPositionLabel.textContent = yMean.toFixed(2);
+
+            xPositionLabel.style.left = `${xMean / 6 * chart.width}px`;
+            xPositionLabel.style.top = `-20px`; // Position über der Linie
+            yPositionLabel.style.top = `${chart.height - yMean / 6 * chart.height - 20}px`;
+        }
+
+        // Zeichne die Punkte (Blasen)
+        data.forEach(d => {
+            const x = d.x / 6 * chart.width;
+            const y = chart.height - d.y / 6 * chart.height;
+            ctx.fillStyle = d.color;
+            ctx.beginPath();
+            ctx.arc(x, y, d.size / 10, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.fillStyle = 'white';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = 'bold 12px Arial';
+            ctx.fillText(d.label.split(' ').pop(), x, y);
+        });
+
+        chart.addEventListener('mousemove', event => {
+            const rect = chart.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+
+            let showTooltip = false;
+            hovering = false;
+
+            if (toggleDragCheckbox.checked && toggleLinesCheckbox.checked) {
+                if (draggingX) {
+                    xMean = x / chart.width * 6;
+                    drawChart();
+                }
+                if (draggingY) {
+                    yMean = 6 - (y / chart.height * 6);
+                    drawChart();
+                }
+            }
+
+            data.forEach(d => {
+                const dx = d.x / 6 * chart.width;
+                const dy = chart.height - d.y / 6 * chart.height;
+                const distance = Math.sqrt((x - dx) ** 2 + (y - dy) ** 2);
+                if (distance < d.size / 10) {
+                    hovering = true;
+                    showTooltip = true;
+                    ctx.fillStyle = 'darkblue';
+                    ctx.fillRect(x + 10, y + 10, 150, 60);
+                    ctx.fillStyle = 'white';
+                    ctx.fillText(`Thema: ${d.label}`, x + 15, y + 30);
+                    ctx.fillText(`X: ${d.x.toFixed(2)}`, x + 15, y + 45);
+                    ctx.fillText(`Y: ${d.y.toFixed(2)}`, x + 15, y + 60);
+                }
+            });
+
+            if (!showTooltip && !hovering) {
+                drawChart();
+            }
+        });
+
+        chart.addEventListener('mousedown', event => {
+            const rect = chart.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+
+            if (toggleDragCheckbox.checked) {
+                if (Math.abs(x - xMean / 6 * chart.width) < 5) {
+                    draggingX = true;
+                }
+                if (Math.abs(y - (chart.height - yMean / 6 * chart.height)) < 5) {
+                    draggingY = true;
+                }
+            }
+        });
+
+        chart.addEventListener('mouseup', () => {
+            draggingX = false;
+            draggingY = false;
+        });
+    }
+
+    function downloadChart() {
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = chart.width;
+        tempCanvas.height = chart.height;
+        const tempCtx = tempCanvas.getContext('2d');
+
+        tempCtx.fillStyle = 'white';
+        tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+
+        // Zeichne Gitternetz und Achsen-Skalen
+        tempCtx.strokeStyle = '#ddd';
+        tempCtx.lineWidth = 1;
+        for (let i = 1; i <= 5; i++) {
+            const xPos = i / 6 * chart.width;
+            const yPos = i / 6 * chart.height;
+
+            tempCtx.beginPath();
+            tempCtx.moveTo(xPos, 0);
+            tempCtx.lineTo(xPos, chart.height);
+            tempCtx.moveTo(0, yPos);
+            tempCtx.lineTo(chart.width, yPos);
+            tempCtx.stroke();
+
+            tempCtx.fillStyle = 'black';
+            tempCtx.fillText(i, xPos - 5, chart.height - 5);
+            tempCtx.fillText(i, 5, chart.height - yPos + 5);
+        }
+
+        // Zeichne Durchschnittslinien
+        if (toggleLinesCheckbox.checked) {
+            tempCtx.strokeStyle = 'red';
+            tempCtx.lineWidth = 2;
+            tempCtx.beginPath();
+            tempCtx.moveTo(xMean / 6 * tempCanvas.width, 0);
+            tempCtx.lineTo(xMean / 6 * tempCanvas.width, tempCanvas.height);
+            tempCtx.moveTo(0, tempCanvas.height - yMean / 6 * tempCanvas.height);
+            tempCtx.lineTo(tempCanvas.width, tempCanvas.height - yMean / 6 * tempCanvas.height);
+            tempCtx.stroke();
+
+            // Position der roten Linien anzeigen
+            tempCtx.fillStyle = 'red';
+            tempCtx.fillText(xMean.toFixed(2), xMean / 6 * tempCanvas.width - 10, 20);
+            tempCtx.fillText(yMean.toFixed(2), tempCanvas.width - 30, tempCanvas.height - yMean / 6 * tempCanvas.height - 10);
+        }
+
+        // Zeichne die Punkte (Blasen)
+        data.forEach(d => {
+            const x = d.x / 6 * tempCanvas.width;
+            const y = tempCanvas.height - d.y / 6 * tempCanvas.height;
+            tempCtx.fillStyle = d.color;
+            tempCtx.beginPath();
+            tempCtx.arc(x, y, d.size / 10, 0, Math.PI * 2);
+            tempCtx.fill();
+            tempCtx.strokeStyle = 'white';
+            tempCtx.lineWidth = 2;
+            tempCtx.stroke();
+
+            tempCtx.fillStyle = 'white';
+            tempCtx.textAlign = 'center';
+            tempCtx.textBaseline = 'middle';
+            tempCtx.font = 'bold 12px Arial';
+            tempCtx.fillText(d.label.split(' ').pop(), x, y);
+        });
+
+        // Zeichne Achsenbeschriftungen
+        tempCtx.font = 'bold 14px Arial';
+        tempCtx.fillStyle = 'black';
+        tempCtx.textAlign = 'center';
+        tempCtx.textBaseline = 'middle';
+
+        tempCtx.fillText('Materielle Wesentlichkeit', tempCanvas.width / 2, tempCanvas.height + 20);
+        tempCtx.save();
+        tempCtx.translate(-60, tempCanvas.height / 2);
+        tempCtx.rotate(-Math.PI / 2);
+        tempCtx.fillText('Finanzielle Wesentlichkeit', 0, 0);
+        tempCtx.restore();
+
+        // Zeichne Legende
+        let legendY = 10;
+        data.forEach((d, index) => {
+            tempCtx.fillStyle = d.color;
+            tempCtx.fillText(`Thema ${index + 1}: ${d.label}`, tempCanvas.width - 150, legendY);
+            legendY += 20;
+        });
+
+        const link = document.createElement('a');
+        link.download = 'wesentlichkeitsanalyse.png';
+        link.href = tempCanvas.toDataURL('image/png');
+        link.click();
+    }
+
+    // Initialer Eintrag
+    addInput();
+    drawChart();
+</script>
+
+</body>
+</html>
